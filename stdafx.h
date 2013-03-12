@@ -8,4 +8,5 @@
 
 #include "WordList.h"
 #include "SynonymList.h"
+#include "WordNetList.h"
 #include "MainForm.h"

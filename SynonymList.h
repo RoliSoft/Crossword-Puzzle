@@ -6,7 +6,9 @@ namespace CrosswordPuzzle
 	using namespace System::Collections;
 	using namespace System::Collections::Generic;
 	using namespace System::IO;
+	using namespace System::Text;
 	using namespace System::Text::RegularExpressions;
+	using namespace System::Globalization;
 
 	/// <summary>
 	/// Represents a <see cref="WordList" /> implementation which uses the OpenOffice thesaurus file.
@@ -22,7 +24,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		SynonymList(void)
 		{
-			wrgx  = gcnew Regex("[\\s\\-@\\.]");
+			wrgx  = gcnew Regex("[\\s\\-@\\.'_]");
 			drgx  = gcnew Regex("\\((?:névnap|U\\+)");
 		}
 
@@ -31,54 +33,54 @@ namespace CrosswordPuzzle
 		/// </summary>
 		virtual Void LoadFile(String^ file) override
 		{
-			StreamReader^ sr = gcnew StreamReader(file, System::Text::Encoding::UTF8);
+			StreamReader^ sr = gcnew StreamReader(file, Encoding::UTF8);
 
 			words->Clear();
 
+			Word^ word;
+			int ctx;
+			bool good;
+
 			while (!sr->EndOfStream)
 			{
-				array<String^>^ line = sr->ReadLine()->Trim('|')->Split('|');
-				String^ clue = String::Empty;
-				bool good = true;
-				int ctx;
-				if (!Int32::TryParse(line[1], ctx))
-				{
-					System::Windows::Forms::MessageBox::Show("Error reading line: " + String::Join("|", line));
-					break;
-				}
+				String^ line = sr->ReadLine();
+				array<String^>^ lns = line->Trim('|')->Split('|');
 
-				if (wrgx->IsMatch(line[0]))
+				if (line[0] != '|' && Int32::TryParse(lns[lns->Length - 1], NumberStyles::Integer, CultureInfo::InvariantCulture, ctx))
 				{
-					good = false;
-				}
-
-				for (int i = 0; i < ctx; i++)
-				{
-					array<String^>^ sline = sr->ReadLine()->Trim('|')->Split('|');
-
-					for each (String^ sword in sline)
+					if (word != nullptr && good)
 					{
-						if (sword == line[0])
-						{
-							continue;
-						}
-
-						if (drgx->IsMatch(sword))
-						{
-							good = false;
-							continue;
-						}
-
-						clue += sword + ", ";
+						word->Clue = word->Clue->TrimEnd(' ')->TrimEnd(';') + ".";
+						words->Add(word);
 					}
 
-					clue = clue->TrimEnd(' ')->TrimEnd(',') + "; ";
+					word = gcnew Word(lns[0], String::Empty);
+					good = !wrgx->IsMatch(word->Text);
+					continue;
 				}
-				
-				if (good)
+
+				if (word == nullptr)
 				{
-					words->Add(gcnew Word(line[0], clue->TrimEnd(' ')->TrimEnd(';') + "."));
+					continue;
 				}
+
+				for each (String^ wrd in lns)
+				{
+					if (wrd == word->Text)
+					{
+						continue;
+					}
+
+					if (drgx->IsMatch(wrd))
+					{
+						good = false;
+						continue;
+					}
+
+					word->Clue += wrd + ", ";
+				}
+
+				word->Clue = word->Clue->TrimEnd(' ')->TrimEnd(',') + "; ";
 			}
 
 			sr->Close();

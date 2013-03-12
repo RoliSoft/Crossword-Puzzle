@@ -9,6 +9,8 @@ namespace CrosswordPuzzle
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Threading;
+	using namespace System::Runtime::InteropServices;
 
 	/// <summary>
 	/// Summary for MainForm
@@ -109,38 +111,39 @@ namespace CrosswordPuzzle
 			// 
 			// newPuzzleToolStripMenuItem
 			// 
+			this->newPuzzleToolStripMenuItem->Enabled = false;
 			this->newPuzzleToolStripMenuItem->Name = L"newPuzzleToolStripMenuItem";
-			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->newPuzzleToolStripMenuItem->Text = L"New puzzle";
 			this->newPuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::newPuzzleToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(133, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
 			// 
 			// loadPuzzleToolStripMenuItem
 			// 
 			this->loadPuzzleToolStripMenuItem->Name = L"loadPuzzleToolStripMenuItem";
-			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->loadPuzzleToolStripMenuItem->Text = L"Load puzzle";
 			// 
 			// savePuzzleToolStripMenuItem
 			// 
 			this->savePuzzleToolStripMenuItem->Enabled = false;
 			this->savePuzzleToolStripMenuItem->Name = L"savePuzzleToolStripMenuItem";
-			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->savePuzzleToolStripMenuItem->Text = L"Save puzzle";
 			// 
 			// toolStripSeparator1
 			// 
 			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(133, 6);
+			this->toolStripSeparator1->Size = System::Drawing::Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
 			// 
@@ -201,13 +204,32 @@ namespace CrosswordPuzzle
 	private: WordList^ _words;
 
 	private: Void MainForm_Load(System::Object^  sender, System::EventArgs^  e) {
+				 Control::CheckForIllegalCrossThreadCalls = false;
 				 this->Visible = true;
+
+				 ThreadStart^ tst = gcnew ThreadStart(this, &MainForm::InitialLoadDictionary);
+				 Thread^ thd = gcnew Thread(tst);
+				 thd->Start();
+			 }
+
+	private: Void InitialLoadDictionary() {
 				 toolStripStatusLabel->Text = "Loading dictionary...";
 				 this->Refresh();
 
-				 _words = gcnew SynonymList();
-				 _words->LoadFile("hungarian.txt");
+				 _words = gcnew WordNetList();
 
+				 try
+				 {
+					 _words->LoadFile("wordnet_3.0.all.dat");
+				 }
+				 catch (Exception^ ex)
+				 {
+					 toolStripStatusLabel->Text = "Exception occurred.";
+					 MessageBox::Show(ex->Message + Environment::NewLine + ex->StackTrace, "Dictionary loading exception");
+					 return;
+				 }
+
+				 newPuzzleToolStripMenuItem->Enabled = true;
 				 toolStripStatusLabel->Text = "Ready.";
 			 }
 
@@ -311,14 +333,16 @@ namespace CrosswordPuzzle
 					 gamePanel->Controls->Add(tb);
 				 }
 
-				 gamePanel->ResumeLayout();
-				 gamePanel->Visible = true;
-				 introLabel->Visible = false;
-				 toolStripStatusLabel->Text = "Ready.";
-
 				 this->Height = 110 + (28 * (y));
 				 this->Width  = 41 + (33 * (xm));
 				 this->CenterToScreen();
+
+				 this->Refresh();
+				 gamePanel->ResumeLayout();
+
+				 gamePanel->Visible = true;
+				 introLabel->Visible = false;
+				 toolStripStatusLabel->Text = "Ready.";
 			 }
 
 	private: Void exitToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
