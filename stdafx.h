@@ -6,5 +6,6 @@
 //#include "iostream"
 //#include "fstream"
 
+#include "WordList.h"
 #include "SynonymList.h"
 #include "MainForm.h"

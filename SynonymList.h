@@ -8,36 +8,28 @@ namespace CrosswordPuzzle
 	using namespace System::IO;
 	using namespace System::Text::RegularExpressions;
 
-	ref class Word
-	{
-	public:
-		String^ Text;
-		String^ Clue;
-
-		Word(String^ text, String^ clue)
-		{
-			this->Text = text;
-			this->Clue = clue;
-		}
-	};
-
-	ref class SynonymList
+	/// <summary>
+	/// Represents a <see cref="WordList" /> implementation which uses the OpenOffice thesaurus file.
+	/// </summary>
+	public ref class SynonymList : WordList
 	{
 	private:
-		Generic::List<Word^>^ words;
-		Random^ rand;
 		Regex^ wrgx, ^drgx;
 
 	public:
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SynonymList" /> class.
+		/// </summary>
 		SynonymList(void)
 		{
-			words = gcnew Generic::List<Word^>();
-			rand  = gcnew Random();
 			wrgx  = gcnew Regex("[\\s\\-@\\.]");
 			drgx  = gcnew Regex("\\((?:névnap|U\\+)");
 		}
 
-		Void LoadFile(String^ file)
+		/// <summary>
+		/// Loads the words from the specified file.
+		/// </summary>
+		virtual Void LoadFile(String^ file) override
 		{
 			StreamReader^ sr = gcnew StreamReader(file, System::Text::Encoding::UTF8);
 
@@ -90,60 +82,6 @@ namespace CrosswordPuzzle
 			}
 
 			sr->Close();
-		}
-
-		Word^ GetWord()
-		{
-			if (words->Count == 0)
-			{
-				return nullptr;
-			}
-
-			return words[rand->Next(0, words->Count - 1)];
-		}
-
-		Word^ GetWord(int size)
-		{
-			if (words->Count == 0)
-			{
-				return nullptr;
-			}
-
-			Word^ w;
-
-			for (int i = 0; i < words->Count; i++)
-			{
-				w = words[rand->Next(0, words->Count - 1)];
-
-				if (w->Text->Length == size)
-				{
-					break;
-				}
-			}
-
-			return w;
-		}
-
-		Word^ GetWord(int min, int max)
-		{
-			if (words->Count == 0)
-			{
-				return nullptr;
-			}
-
-			Word^ w;
-
-			for (int i = 0; i < words->Count; i++)
-			{
-				w = words[rand->Next(0, words->Count - 1)];
-
-				if (w->Text->Length >= min && w->Text->Length <= max)
-				{
-					break;
-				}
-			}
-
-			return w;
 		}
 	};
 }

@@ -198,15 +198,15 @@ namespace CrosswordPuzzle
 		}
 #pragma endregion
 
-	private: SynonymList^ _synonyms;
+	private: WordList^ _words;
 
 	private: Void MainForm_Load(System::Object^  sender, System::EventArgs^  e) {
 				 this->Visible = true;
 				 toolStripStatusLabel->Text = "Loading dictionary...";
 				 this->Refresh();
 
-				 _synonyms = gcnew SynonymList();
-				 _synonyms->LoadFile("hungarian.txt");
+				 _words = gcnew SynonymList();
+				 _words->LoadFile("hungarian.txt");
 
 				 toolStripStatusLabel->Text = "Ready.";
 			 }
@@ -216,40 +216,6 @@ namespace CrosswordPuzzle
 				 gamePanel->Visible = true;
 
 				 String^ a = String::Empty;
-
-				 /*for (int i = 0; i < 10; i++)
-				 {
-					 int m = 0;
-
-					 for (int j = 0; j < 3; j++)
-					 {
-						 String^ w = _synonyms->GetWord(2, 8)->Text;
-
-						 a += w;
-
-						 if (j != 2)
-						 {
-							 a += "\1";
-						 }
-
-						 m += w->Length;
-					 }
-
-					 if (m < 18)
-					 {
-						 a += "\1" + _synonyms->GetWord(19 - m)->Text;
-					 }
-					 else if (m == 18)
-					 {
-						 a += "\1\1";
-					 }
-
-					 if (i != 9)
-					 {
-						a += "\n";
-					 }
-				 }*/
-
 				 Random^ rand = gcnew Random();
 
 				 for (int i = 0; i < 10; i++)
@@ -267,7 +233,7 @@ namespace CrosswordPuzzle
 
 					 do
 					 {
-						 String^ w = _synonyms->GetWord(2, ws)->Text;
+						 String^ w = _words->GetWord(2, ws)->Text;
 						 ws -= w->Length - 1;
 						 a += w + "\1";
 
