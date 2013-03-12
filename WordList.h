@@ -11,16 +11,16 @@ namespace CrosswordPuzzle
 	/// <summary>
 	/// Represents a word in the database.
 	/// </summary>
-	public ref class Word
+	public ref class DBWord
 	{
 	public:
 		String^ Text;
 		String^ Clue;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Word" /> class.
+		/// Initializes a new instance of the <see cref="DBWord" /> class.
 		/// </summary>
-		Word(String^ text, String^ clue)
+		DBWord(String^ text, String^ clue)
 		{
 			Text = text;
 			Clue = clue;
@@ -33,7 +33,7 @@ namespace CrosswordPuzzle
 	public ref class WordList abstract
 	{
 	protected:
-		Generic::List<Word^>^ words;
+		List<DBWord^>^ words;
 		Random^ rand;
 
 	public:
@@ -42,7 +42,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		WordList()
 		{
-			words = gcnew Generic::List<Word^>();
+			words = gcnew List<DBWord^>();
 			rand  = gcnew Random();
 		}
 
@@ -62,7 +62,7 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Gets a random word from the database.
 		/// </summary>
-		Word^ GetWord()
+		DBWord^ GetWord()
 		{
 			if (words->Count == 0)
 			{
@@ -78,14 +78,14 @@ namespace CrosswordPuzzle
 		/// <remarks>
 		/// If a word of the specified size was not found, the last inspected word will be returned.
 		/// </remarks>
-		Word^ GetWord(int size)
+		DBWord^ GetWord(int size)
 		{
 			if (words->Count == 0)
 			{
 				return nullptr;
 			}
 
-			Word^ w;
+			DBWord^ w;
 
 			for (int i = 0; i < words->Count; i++)
 			{
@@ -106,14 +106,14 @@ namespace CrosswordPuzzle
 		/// <remarks>
 		/// If a word of the specified size was not found, the last inspected word will be returned.
 		/// </remarks>
-		Word^ GetWord(int min, int max)
+		DBWord^ GetWord(int min, int max)
 		{
 			if (words->Count == 0)
 			{
 				return nullptr;
 			}
 
-			Word^ w;
+			DBWord^ w;
 
 			for (int i = 0; i < words->Count; i++)
 			{

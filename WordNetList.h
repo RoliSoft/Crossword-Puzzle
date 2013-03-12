@@ -68,7 +68,7 @@ namespace CrosswordPuzzle
 						continue;
 					}
 
-					words->Add(gcnew Word(wrd, defs[0]));
+					words->Add(gcnew DBWord(wrd, defs[0]));
 				}
 			}
 

@@ -9,4 +9,5 @@
 #include "WordList.h"
 #include "SynonymList.h"
 #include "WordNetList.h"
+#include "UIWord.h"
 #include "MainForm.h"

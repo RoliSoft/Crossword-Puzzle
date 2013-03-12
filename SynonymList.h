@@ -37,7 +37,7 @@ namespace CrosswordPuzzle
 
 			words->Clear();
 
-			Word^ word;
+			DBWord^ word;
 			int ctx;
 			bool good;
 
@@ -54,7 +54,7 @@ namespace CrosswordPuzzle
 						words->Add(word);
 					}
 
-					word = gcnew Word(lns[0], String::Empty);
+					word = gcnew DBWord(lns[0], String::Empty);
 					good = !wrgx->IsMatch(word->Text);
 					continue;
 				}

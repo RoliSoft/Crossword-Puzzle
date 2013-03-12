@@ -96,6 +96,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SynonymList.h" />
+    <ClInclude Include="UIWord.h" />
     <ClInclude Include="WordList.h" />
     <ClInclude Include="WordNetList.h" />
   </ItemGroup>

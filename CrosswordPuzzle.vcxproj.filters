@@ -44,6 +44,9 @@
     <ClInclude Include="WordNetList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UIWord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">

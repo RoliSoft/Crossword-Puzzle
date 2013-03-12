@@ -49,6 +49,8 @@ namespace CrosswordPuzzle
 	private: System::Windows::Forms::ToolStripStatusLabel^  toolStripStatusLabel;
 
 
+
+
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -113,37 +115,37 @@ namespace CrosswordPuzzle
 			// 
 			this->newPuzzleToolStripMenuItem->Enabled = false;
 			this->newPuzzleToolStripMenuItem->Name = L"newPuzzleToolStripMenuItem";
-			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->newPuzzleToolStripMenuItem->Text = L"New puzzle";
 			this->newPuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::newPuzzleToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(133, 6);
 			// 
 			// loadPuzzleToolStripMenuItem
 			// 
 			this->loadPuzzleToolStripMenuItem->Name = L"loadPuzzleToolStripMenuItem";
-			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->loadPuzzleToolStripMenuItem->Text = L"Load puzzle";
 			// 
 			// savePuzzleToolStripMenuItem
 			// 
 			this->savePuzzleToolStripMenuItem->Enabled = false;
 			this->savePuzzleToolStripMenuItem->Name = L"savePuzzleToolStripMenuItem";
-			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->savePuzzleToolStripMenuItem->Text = L"Save puzzle";
 			// 
 			// toolStripSeparator1
 			// 
 			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(149, 6);
+			this->toolStripSeparator1->Size = System::Drawing::Size(133, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
 			// 
@@ -307,7 +309,7 @@ namespace CrosswordPuzzle
 					 tb->MaxLength    = 1;
 					 tb->BorderStyle  = BorderStyle::FixedSingle;
 					 tb->Font         = gcnew Drawing::Font(L"Segoe UI Semibold", 12, FontStyle::Bold, GraphicsUnit::Point, static_cast<Byte>(0));
-					 tb->Location     = Point(x++ * 33, y * 28);
+					 tb->Location     = Drawing::Point(x++ * 33, y * 28);
 					 tb->Size         = Drawing::Size(34, 29);
 					 tb->TextAlign    = HorizontalAlignment::Center;
 
@@ -318,6 +320,21 @@ namespace CrosswordPuzzle
 					 }
 					 else
 					 {
+						 if (tba->Count == 0)
+						 {
+							 Label^ lbl = gcnew Label();
+
+							 lbl->BackColor = tb->BackColor;
+							 lbl->Font      = gcnew Drawing::Font(L"Microsoft Sans Serif", 6.75F, FontStyle::Regular, GraphicsUnit::Point, static_cast<Byte>(0));
+							 lbl->Location  = Drawing::Point((x - 1) * 33 + 1, y * 28 + 1);
+							 lbl->Size      = Drawing::Size(7, 9);
+							 lbl->TextAlign = ContentAlignment::BottomCenter;
+							 lbl->UseCompatibleTextRendering = true;
+							 lbl->Text      = gcnew String(65+(i%26), 1);
+
+							 gamePanel->Controls->Add(lbl);
+						 }
+
 						 tba->Add(tb);
 
 						 tb->Text         = a[i].ToString();
