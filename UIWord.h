@@ -16,6 +16,8 @@ namespace CrosswordPuzzle
 		PZWord^ Word;
 		Label^ Char;
 		List<TextBox^>^ TextBoxes;
+		UIWord^ NextWord;
+		UIWord^ PrevWord;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UIWord" /> class.

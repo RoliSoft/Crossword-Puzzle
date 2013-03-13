@@ -243,6 +243,7 @@ namespace CrosswordPuzzle
 	private: Puzzle^ GeneratePuzzle() {
 				 Puzzle^ pz   = gcnew Puzzle();
 				 Random^ rand = gcnew Random();
+				 UIWord^ cwrd = nullptr;
 				 
 				 for (int i = 0, x = 0, y = 0; i < 10; i++, x = 0, y++)
 				 {
@@ -260,7 +261,16 @@ namespace CrosswordPuzzle
 					 {
 						 DBWord^ word = _words->GetWord(2, maxlen);
 
-						 pz->Words->Add(gcnew UIWord(gcnew PZWord(word, x, y, Direction::Across)));
+						 UIWord^ uwrd = gcnew UIWord(gcnew PZWord(word, x, y, Direction::Across));
+						 uwrd->PrevWord = cwrd;
+						 pz->Words->Add(uwrd);
+
+						 if (cwrd != nullptr)
+						 {
+							 cwrd->NextWord = uwrd;
+						 }
+
+						 cwrd = uwrd;
 
 						 maxlen -= word->Text->Length + 1;
 						 x += word->Text->Length + 1;
@@ -399,75 +409,6 @@ namespace CrosswordPuzzle
 					 ym = y > ym ? y : ym;
 				 }
 
-				 /*int x = 0, y = 0, xm = 0;
-				 for (int i = 0; i < a->Length; i++)
-				 {
-					 xm = Math::Max(x, xm);
-
-					 if ((a[i] == '\0' || a[i] == '\1' || a[i] == '\n') && tba->Count != 0)
-					 {
-						 tba = gcnew Generic::List<TextBox^>();
-					 }
-
-					 if (a[i] == '\0')
-					 {
-						 x++;
-						 continue;
-					 }
-
-					 if (a[i] == '\n')
-					 {
-						 x = 0;
-						 y++;
-						 continue;
-					 }
-
-					 TextBox^ tb = gcnew TextBox();
-
-					 tb->MaxLength    = 1;
-					 tb->BorderStyle  = BorderStyle::FixedSingle;
-					 tb->Font         = gcnew Drawing::Font(L"Segoe UI Semibold", 12, FontStyle::Bold, GraphicsUnit::Point, static_cast<Byte>(0));
-					 tb->Location     = Drawing::Point(x++ * 33, y * 28);
-					 tb->Size         = Drawing::Size(34, 29);
-					 tb->TextAlign    = HorizontalAlignment::Center;
-
-					 if (a[i] == '\1')
-					 {
-						 tb->Enabled   = false;
-						 tb->BackColor = SystemColors::ControlDarkDark;
-					 }
-					 else
-					 {
-						 if (tba->Count == 0)
-						 {
-							 Label^ lbl = gcnew Label();
-
-							 lbl->BackColor = tb->BackColor;
-							 lbl->Font      = gcnew Drawing::Font(L"Microsoft Sans Serif", 6.75F, FontStyle::Regular, GraphicsUnit::Point, static_cast<Byte>(0));
-							 lbl->Location  = Drawing::Point((x - 1) * 33 + 1, y * 28 + 1);
-							 lbl->Size      = Drawing::Size(7, 9);
-							 lbl->TextAlign = ContentAlignment::BottomCenter;
-							 lbl->UseCompatibleTextRendering = true;
-							 lbl->Text      = gcnew String(65+(i%26), 1);
-
-							 gamePanel->Controls->Add(lbl);
-						 }
-
-						 tba->Add(tb);
-
-						 tb->Text         = a[i].ToString();
-						 tb->Tag          = tba;
-						 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
-						 tb->LostFocus   += gcnew EventHandler(this, &MainForm::puzzleTextBox_LostFocus);
-						 tb->MouseUp     += gcnew MouseEventHandler(this, &MainForm::puzzleTextBox_MouseUp);
-						 tb->TextChanged += gcnew EventHandler(this, &MainForm::puzzleTextBox_TextChanged);
-						 tb->MouseEnter  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseEnter);
-						 tb->MouseLeave  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseLeave);
-					 }
-
-					 gamePanel->Controls->Add(tb);
-				 }*/
-
 				 this->Height = 110 + (28 * (ym + 1));
 				 this->Width  = 41 + (33 * xm);
 				 this->CenterToScreen();
@@ -485,13 +426,28 @@ namespace CrosswordPuzzle
 			 }
 
 	private: Void puzzleTextBox_TextChanged(Object^  sender, EventArgs^  e) {
-				 TextBox^ tb = static_cast<TextBox^>(sender);
+				 TextBox^ tb  = static_cast<TextBox^>(sender);
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 int idx = word->TextBoxes->IndexOf(tb);
 				 if (idx != word->TextBoxes->Count - 1)
 				 {
 					 word->TextBoxes[idx + 1]->Focus();
+				 }
+				 else if (word->NextWord != nullptr)
+				 {
+					 word->NextWord->TextBoxes[0]->Focus();
+				 }
+				 else if (word->PrevWord != nullptr)
+				 {
+					 UIWord^ cwrd = word;
+					 
+					 while (cwrd->PrevWord != nullptr)
+					 {
+						 cwrd = cwrd->PrevWord;
+					 }
+
+					 cwrd->TextBoxes[0]->Focus();
 				 }
 			 }
 

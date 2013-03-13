@@ -16,7 +16,7 @@ namespace CrosswordPuzzle
 	public ref class SynonymList : WordList
 	{
 	private:
-		Regex^ wrgx, ^drgx;
+		Regex^ drgx;
 
 	public:
 		/// <summary>
@@ -24,8 +24,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		SynonymList(void)
 		{
-			wrgx  = gcnew Regex("[\\s\\-@\\.'_\\(]");
-			drgx  = gcnew Regex("\\((?:névnap|U\\+)");
+			drgx = gcnew Regex("\\((?:névnap|U\\+)");
 		}
 
 		/// <summary>
@@ -54,8 +53,8 @@ namespace CrosswordPuzzle
 						words->Add(word);
 					}
 
-					word = gcnew DBWord(lns[0], String::Empty);
-					good = !wrgx->IsMatch(word->Text);
+					word = gcnew DBWord(lns[0]->ToLower());
+					good = wrgx->IsMatch(word->Text);
 					continue;
 				}
 

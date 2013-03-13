@@ -15,18 +15,7 @@ namespace CrosswordPuzzle
 	/// </summary>
 	public ref class WordNetList : WordList
 	{
-	private:
-		Regex^ wrgx, ^drgx;
-
 	public:
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WordNetList" /> class.
-		/// </summary>
-		WordNetList(void)
-		{
-			wrgx  = gcnew Regex("[\\s\\-@\\.'_\\(]");
-		}
-
 		/// <summary>
 		/// Loads the words from the specified file.
 		/// </summary>
@@ -63,12 +52,12 @@ namespace CrosswordPuzzle
 
 				for each (String^ wrd in wrds)
 				{
-					if (wrgx->IsMatch(wrd))
+					if (!wrgx->IsMatch(wrd))
 					{
 						continue;
 					}
 
-					words->Add(gcnew DBWord(wrd, defs[0]));
+					words->Add(gcnew DBWord(wrd->ToLower(), defs[0]));
 				}
 			}
 

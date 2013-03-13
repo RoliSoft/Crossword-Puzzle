@@ -20,6 +20,15 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DBWord" /> class.
 		/// </summary>
+		DBWord(String^ text)
+		{
+			Text = text;
+			Clue = String::Empty;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DBWord" /> class.
+		/// </summary>
 		DBWord(String^ text, String^ clue)
 		{
 			Text = text;
@@ -35,6 +44,7 @@ namespace CrosswordPuzzle
 	protected:
 		List<DBWord^>^ words;
 		Random^ rand;
+		Regex^ wrgx;
 
 	public:
 		/// <summary>
@@ -44,6 +54,7 @@ namespace CrosswordPuzzle
 		{
 			words = gcnew List<DBWord^>();
 			rand  = gcnew Random();
+			wrgx  = gcnew Regex("^\\p{L}+$");
 		}
 
 		/// <summary>
