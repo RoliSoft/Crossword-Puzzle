@@ -13,16 +13,16 @@ namespace CrosswordPuzzle
 	public ref class UIWord
 	{
 	public:
-		DBWord^ Word;
-		Label^ IdxLabel;
+		PZWord^ Word;
+		Label^ Char;
 		List<TextBox^>^ TextBoxes;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UIWord" /> class.
 		/// </summary>
-		UIWord(DBWord^ word)
+		UIWord(PZWord^ word)
 		{
-			Word = word;
+			Word      = word;
 			TextBoxes = gcnew List<TextBox^>();
 		}
 	};

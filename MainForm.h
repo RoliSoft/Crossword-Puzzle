@@ -250,9 +250,9 @@ namespace CrosswordPuzzle
 
 					 if (rand->Next(0, 2) == 1)
 					 {
-						 for (int i = 0, s = rand->Next(1, 5); i < s; i++, maxlen--, x++)
+						 for (int i = 0, s = rand->Next(0, 4); i < s; i++, maxlen--, x++)
 						 {
-							 pz->Words->Add(gcnew PZWord(BoxType::Blank, x, y));
+							 pz->Words->Add(gcnew UIWord(gcnew PZWord(BoxType::Blank, x, y)));
 						 }
 					 }
 
@@ -260,12 +260,12 @@ namespace CrosswordPuzzle
 					 {
 						 DBWord^ word = _words->GetWord(2, maxlen);
 
-						 pz->Words->Add(gcnew PZWord(word, x, y, Direction::Across));
+						 pz->Words->Add(gcnew UIWord(gcnew PZWord(word, x, y, Direction::Across)));
 
 						 maxlen -= word->Text->Length + 1;
 						 x += word->Text->Length + 1;
 
-						 pz->Words->Add(gcnew PZWord(BoxType::Black, x - 1, y));
+						 pz->Words->Add(gcnew UIWord(gcnew PZWord(BoxType::Black, x - 1, y)));
 
 						 if (maxlen < 3)
 						 {
@@ -274,13 +274,13 @@ namespace CrosswordPuzzle
 
 							 for (; maxlen > -1; maxlen--, x++)
 							 {
-								 pz->Words->Add(gcnew PZWord(BoxType::Blank, x, y));
+								 pz->Words->Add(gcnew UIWord(gcnew PZWord(BoxType::Blank, x, y)));
 							 }
 						 }
 					 }
 					 while (maxlen > 0);
 
-					 if (pz->Words[pz->Words->Count - 1]->BType == BoxType::Black)
+					 if (pz->Words[pz->Words->Count - 1]->Word->BType == BoxType::Black)
 					 {
 						 pz->Words->RemoveAt(pz->Words->Count - 1);
 					 }
@@ -289,7 +289,7 @@ namespace CrosswordPuzzle
 				 return pz;
 			 }
 
-	private: TextBox^ CreateWordBox(String^ chr, int x, int y) {
+	private: TextBox^ CreateWordBox(UIWord^ word, int widx, int x, int y) {
 				 TextBox^ tb = gcnew TextBox();
 
 				 tb->MaxLength    = 1;
@@ -298,8 +298,8 @@ namespace CrosswordPuzzle
 				 tb->Location     = Drawing::Point(x * 33, y * 28);
 				 tb->Size         = Drawing::Size(34, 29);
 				 tb->TextAlign    = HorizontalAlignment::Center;
-				 tb->Text         = chr;
-				 //tb->Tag          = tba;
+				 tb->Text         = word->Word->Word->Text[widx].ToString();
+				 tb->Tag          = word;
 				 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
 				 tb->LostFocus   += gcnew EventHandler(this, &MainForm::puzzleTextBox_LostFocus);
 				 tb->MouseUp     += gcnew MouseEventHandler(this, &MainForm::puzzleTextBox_MouseUp);
@@ -327,6 +327,22 @@ namespace CrosswordPuzzle
 				 return tb;
 			 }
 
+	private: Label^ CreateLabel(String^ chr, int x, int y) {
+				Label^ lbl = gcnew Label();
+
+				lbl->Text      = chr;
+				lbl->BackColor = SystemColors::Control;
+				lbl->Font      = gcnew Drawing::Font(L"Microsoft Sans Serif", 6.75F, FontStyle::Regular, GraphicsUnit::Point, static_cast<Byte>(0));
+				lbl->Location  = Drawing::Point(x * 33 + 1, y * 28 + 1);
+				lbl->Size      = Drawing::Size(7, 9);
+				lbl->TextAlign = ContentAlignment::BottomCenter;
+				lbl->UseCompatibleTextRendering = true;
+
+				gamePanel->Controls->Add(lbl);
+
+				return lbl;
+			}
+
 	private: Void newPuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
 				 introLabel->Visible = false;
 				 gamePanel->Visible = true;
@@ -345,12 +361,12 @@ namespace CrosswordPuzzle
 
 				 int x, y, xm = 0, ym = 0;
 
-				 for each (PZWord^ word in pz->Words)
+				 for each (UIWord^ word in pz->Words)
 				 {
-					 x = word->Pos->X;
-					 y = word->Pos->Y;
+					 x = word->Word->Pos->X;
+					 y = word->Word->Pos->Y;
 
-					 switch (word->BType)
+					 switch (word->Word->BType)
 					 {
 					 default:
 				   //case BoxType::Blank:
@@ -362,33 +378,20 @@ namespace CrosswordPuzzle
 						 break;
 
 					 case BoxType::Word:
-						 for (int i = 0; i < word->Word->Text->Length; i++)
+						 word->Char = CreateLabel(gcnew String(65+(x%26), 1), x, y);
+
+						 for (int i = 0; i < word->Word->Word->Text->Length; i++)
 						 {
-							 TextBox^ tb = CreateWordBox(word->Word->Text[i].ToString(), x, y);
+							 word->TextBoxes->Add(CreateWordBox(word, i, x, y));
 
-							 /*if (tba->Count == 0)
-							 {
-							 Label^ lbl = gcnew Label();
-
-							 lbl->BackColor = tb->BackColor;
-							 lbl->Font      = gcnew Drawing::Font(L"Microsoft Sans Serif", 6.75F, FontStyle::Regular, GraphicsUnit::Point, static_cast<Byte>(0));
-							 lbl->Location  = Drawing::Point((x - 1) * 33 + 1, y * 28 + 1);
-							 lbl->Size      = Drawing::Size(7, 9);
-							 lbl->TextAlign = ContentAlignment::BottomCenter;
-							 lbl->UseCompatibleTextRendering = true;
-							 lbl->Text      = gcnew String(65+(i%26), 1);
-
-							 gamePanel->Controls->Add(lbl);
-							 }*/
-							 tb->Tag = tba;
-							 tba->Add(tb);
-
-							 switch (word->Pos->Dir)
+							 switch (word->Word->Pos->Dir)
 							 {
 								 case Direction::Across: x++; break;
 								 case Direction::Down:   y++; break;
 							 }
 						 }
+
+						 word->Char->BringToFront();
 						 break;
 					 }
 
@@ -483,12 +486,12 @@ namespace CrosswordPuzzle
 
 	private: Void puzzleTextBox_TextChanged(Object^  sender, EventArgs^  e) {
 				 TextBox^ tb = static_cast<TextBox^>(sender);
-				 Generic::List<TextBox^>^ tba = static_cast<Generic::List<TextBox^>^>(tb->Tag);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
-				 int idx = tba->IndexOf(tb);
-				 if (idx != tba->Count - 1)
+				 int idx = word->TextBoxes->IndexOf(tb);
+				 if (idx != word->TextBoxes->Count - 1)
 				 {
-					 tba[idx + 1]->Focus();
+					 word->TextBoxes[idx + 1]->Focus();
 				 }
 			 }
 
@@ -496,9 +499,10 @@ namespace CrosswordPuzzle
 				 TextBox^ tb = static_cast<TextBox^>(sender);
 				 tb->SelectAll();
 
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
+
 				 gamePanel->SuspendLayout();
-				 Generic::List<TextBox^>^ tba = static_cast<Generic::List<TextBox^>^>(tb->Tag);
-				 for each (TextBox^ tc in tba)
+				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::ControlLight;
 				 }
@@ -509,9 +513,10 @@ namespace CrosswordPuzzle
 				 TextBox^ tb = static_cast<TextBox^>(sender);
 				 tb->SelectionLength = 0;
 
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
+
 				 gamePanel->SuspendLayout();
-				 Generic::List<TextBox^>^ tba = static_cast<Generic::List<TextBox^>^>(tb->Tag);
-				 for each (TextBox^ tc in tba)
+				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::Window;
 				 }
@@ -535,10 +540,10 @@ namespace CrosswordPuzzle
 					 return;
 				 }
 
-				 Generic::List<TextBox^>^ tba = static_cast<Generic::List<TextBox^>^>(tb->Tag);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
-				 for each (TextBox^ tc in tba)
+				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::Control;
 				 }
@@ -553,10 +558,10 @@ namespace CrosswordPuzzle
 					 return;
 				 }
 
-				 Generic::List<TextBox^>^ tba = static_cast<Generic::List<TextBox^>^>(tb->Tag);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
-				 for each (TextBox^ tc in tba)
+				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::Window;
 				 }

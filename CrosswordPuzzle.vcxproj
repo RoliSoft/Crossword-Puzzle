@@ -94,6 +94,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Puzzle.h" />
+    <ClInclude Include="PZWord.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SynonymList.h" />

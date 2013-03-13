@@ -12,6 +12,7 @@
 #include "WordList.h"
 #include "SynonymList.h"
 #include "WordNetList.h"
-#include "Puzzle.h"
+#include "PZWord.h"
 #include "UIWord.h"
+#include "Puzzle.h"
 #include "MainForm.h"
