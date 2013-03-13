@@ -24,7 +24,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		WordNetList(void)
 		{
-			wrgx  = gcnew Regex("[\\s\\-@\\.'_]");
+			wrgx  = gcnew Regex("[\\s\\-@\\.'_\\(]");
 		}
 
 		/// <summary>

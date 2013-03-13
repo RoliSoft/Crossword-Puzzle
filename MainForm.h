@@ -64,6 +64,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainForm::typeid));
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
 			this->toolStripStatusLabel = (gcnew System::Windows::Forms::ToolStripStatusLabel());
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
@@ -114,38 +115,42 @@ namespace CrosswordPuzzle
 			// newPuzzleToolStripMenuItem
 			// 
 			this->newPuzzleToolStripMenuItem->Enabled = false;
+			this->newPuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"newPuzzleToolStripMenuItem.Image")));
 			this->newPuzzleToolStripMenuItem->Name = L"newPuzzleToolStripMenuItem";
-			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->newPuzzleToolStripMenuItem->Text = L"New puzzle";
 			this->newPuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::newPuzzleToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(133, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
 			// 
 			// loadPuzzleToolStripMenuItem
 			// 
+			this->loadPuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"loadPuzzleToolStripMenuItem.Image")));
 			this->loadPuzzleToolStripMenuItem->Name = L"loadPuzzleToolStripMenuItem";
-			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->loadPuzzleToolStripMenuItem->Text = L"Load puzzle";
 			// 
 			// savePuzzleToolStripMenuItem
 			// 
 			this->savePuzzleToolStripMenuItem->Enabled = false;
+			this->savePuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"savePuzzleToolStripMenuItem.Image")));
 			this->savePuzzleToolStripMenuItem->Name = L"savePuzzleToolStripMenuItem";
-			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->savePuzzleToolStripMenuItem->Text = L"Save puzzle";
 			// 
 			// toolStripSeparator1
 			// 
 			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(133, 6);
+			this->toolStripSeparator1->Size = System::Drawing::Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
+			this->exitToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"exitToolStripMenuItem.Image")));
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
 			// 

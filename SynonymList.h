@@ -24,7 +24,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		SynonymList(void)
 		{
-			wrgx  = gcnew Regex("[\\s\\-@\\.'_]");
+			wrgx  = gcnew Regex("[\\s\\-@\\.'_\\(]");
 			drgx  = gcnew Regex("\\((?:névnap|U\\+)");
 		}
 

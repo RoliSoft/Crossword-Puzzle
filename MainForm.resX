@@ -123,4 +123,60 @@
   <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>126, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="newPuzzleToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABQklEQVQ4T4WRvU4CQRRGx8LG
+        ysZCH0ESrX0ULLE30RoimqgUKu9goeAPoPhvTEwIhMfynJElu8DCl5xkZu733bk7GyZ0AnewGXdZeXYP
+        enK1D1WY1aAAx6BnrjQ2oBx3/6pAE6wtlCbNhhK59tMWNjiFFmh2ihu4Ha39/jacQa4sduABnCIJ2/AR
+        rJ3DlA7gE16h6AE6AsM28mHVLryBXjNjHcI3WNSkfHFvdnTXyto76DUT1YNf+IEPeAFHdWTDfo7v8gRO
+        6O16zZgNffCmK7gGTc/gg9nEsA274IR69JoxGwZQcoEuwBE1GzJsI293Mie8BGXGbBjCngtkUdNW3GXl
+        meN7uzJjNiOLX5DXwMerx90cbYOfkf7fNXAyazO1BMuwAjug2ffYGOHa8a3p0WtmrHSDVViDdUgauPbM
+        WqpBCH8Px1LS4P8FAgAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="loadPuzzleToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAACX0lEQVQ4T43SW0hTcRwH8N+b
+        9FiP0WOIEIkUvvmSUPQSSAQR2cVuUA/1EESXeZuNeW/pbI6lYZmxLIqKMvOyRCE1b2g2L8t0KOlyc7Yt
+        L9u+/X+/PAekl/7wGT/O+X5/nHMY9ZpJfC6kLCX/P2VpPepRPxsKQpOFmHedxkL7KYSG8xDz3gfmHm62
+        0ADOaj36ZNKZEHyOeKARKzNVWOy+jDHnQcQnqzfBbB04q/Wo67bOHPM7EZ2vF7HAUwzVpSM4ZMH6+D3E
+        Jmwi7n0Azmo96jDqiqO+BqzP1QmeB2rSMNNpFlG1hMVmasFZrUftubqy9R+PsOqtETx3WVMx3WESa26r
+        iE45wNk21WnNUQs+ZOssq7O1iExVC55dlj2YchWIldEKseaxg7PK3maDWtB0S2f9Pe1AaMIqeG4pS4Gn
+        LV9ERixilb9FPA7Oc4/eXNfZIt9sWHZbBM/vinZjsjVPhIfviJWxKvjDYXCee/Tyms4RGq/A0kiJ4Pm1
+        aRfGW3LFr6EyEflaCY/PB85zj4xHiZ5dFbXLo+VYHDQLnl8Yk+BuzhbBgRIR/nIX+7rj4Dz35OQcIXpy
+        heqXhovh6zMKnhtzEuF+bxBL/cUipF4j+W0InOceny3KNvsFehUYVH/lnlwRUE/hzE7EhHp8pr1CWH1I
+        zp5Np0MbXdqq7Lx0gKpbLanLnqaLaz97jfD3m1CSSYEbGdTJSk9Qm4az3Nno/j37k4ns5ynDdo7szps7
+        XH2PD38vOk4f1a3taUmUoGbScPafwxdVmSrPEJWfpJTSTDKYj1GFupWgFujlzQuI/gCA/j2x5BpRPQAA
+        AABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="savePuzzleToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABdklEQVQ4T6WTv0tCURiGr+Du
+        GDS0ut1FQdBB0E2ahPsf+AuVKygOgiiBU/+IghEpiJUQaYi5OLk5tAQSCCWYCYJv5z1onEJuRh88XPi+
+        933OdDUA/0Kz2WzkTHBhlMuxQ2B22/kSXFYqFSEENr/AYZYdVXBVKpWw3mywWq8tYYZZdlRBs1gs4l0E
+        3pZLS5hhlh1V0CoUCnhdrTCdzy1hhll2VMF1Pp/Hi3jhaTazhBlm2VEFnWw2i+F4jOfFwhJmmGVHFdyZ
+        poloNHoQzLKjCrqpVAputxsul2svvO3I5XIUdFVBPx6Pw+PxYDB4RK/38A3ueDMMA16vF5lMhoK+KhhG
+        IhH4fD50OvdwOp2SZrMt4Y43CgKBANLpNAVDVTCKxWLw+/1oNG7ll9RqDcluR0EoFEIymaRgJAXbORVM
+        dF3/qNdvEAwGJdVqS7LbURAOh5FIJMRfpE1kU8yJQBeYgqndbj/fB28/aAvY1RyCI8HxHxEdzfEJVkMC
+        r1tLkDAAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="exitToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABcUlEQVQ4T6WNvUtCYRTGz19g
+        3PIGkUlB1iYI5eYoOAgODi1iJYGr3EH3glpqqKWgoC/6IIKWoGhoiqY3aAgKWqOhpTUaOj3P7d6b5nWo
+        hJ8v5zy/81xR1X8RuvwN7t++iByAI5EcMHw573qEZbz5WcDAaKOhfDk3FbjZW60WZC0Fnmg+6nW9y+f1
+        3XGUM2AJMS+Vips9lUp+9l2wjQHkthC8Vqt6mU7rc7msnMl9oeDubrJZd0eXNy0FCGQDwTqEx2JRz5JJ
+        vc5k9CKV0k3b1sN4XJnRoRtaAEHWIKxCPE0kdMeyXPaiUeWOGZ22gnkMC2AJLENagXyCrx7j2Ic7ZnTo
+        8qatYPFLMOc4CIMZnU4FDMwVRB/OHXa5loJZDMDcQvDhPAeRhGW8CQriGCYgOggeIPDlPIg9Cct4ExTg
+        FwMjYyIzkxDGRaYxD4MB0A+G0iJTzOhgHgWx5oII6AF9Hr2gG3QBZhawgZ9HQSQo+Dsqn8s+qAWjmxJ/
+        AAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>
