@@ -223,11 +223,11 @@ namespace CrosswordPuzzle
 				 toolStripStatusLabel->Text = "Loading dictionary...";
 				 this->Refresh();
 
-				 _words = gcnew WordNetList();
+				 _words = gcnew SynonymList();
 
 				 try
 				 {
-					 _words->LoadFile("wordnet_3.0.all.dat");
+					 _words->LoadFile("th_hu_HU_v2.dat");
 				 }
 				 catch (Exception^ ex)
 				 {
@@ -240,41 +240,96 @@ namespace CrosswordPuzzle
 				 toolStripStatusLabel->Text = "Ready.";
 			 }
 
-	private: Void newPuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
-				 introLabel->Visible = false;
-				 gamePanel->Visible = true;
-
-				 String^ a = String::Empty;
+	private: Puzzle^ GeneratePuzzle() {
+				 Puzzle^ pz   = gcnew Puzzle();
 				 Random^ rand = gcnew Random();
-
-				 for (int i = 0; i < 10; i++)
+				 
+				 for (int i = 0, x = 0, y = 0; i < 10; i++, x = 0, y++)
 				 {
-					 int ws = 22;
+					 int maxlen = 22;
 
 					 if (rand->Next(0, 2) == 1)
 					 {
-						 for (int i = 0, s = rand->Next(1, 5); i < s; i++)
+						 for (int i = 0, s = rand->Next(1, 5); i < s; i++, maxlen--, x++)
 						 {
-							 ws--;
-							 a += "\0";
+							 pz->Words->Add(gcnew PZWord(BoxType::Blank, x, y));
 						 }
 					 }
 
 					 do
 					 {
-						 String^ w = _words->GetWord(2, ws)->Text;
-						 ws -= w->Length - 1;
-						 a += w + "\1";
+						 DBWord^ word = _words->GetWord(2, maxlen);
 
-						 if (ws <= 2)
+						 pz->Words->Add(gcnew PZWord(word, x, y, Direction::Across));
+
+						 maxlen -= word->Text->Length + 1;
+						 x += word->Text->Length + 1;
+
+						 pz->Words->Add(gcnew PZWord(BoxType::Black, x - 1, y));
+
+						 if (maxlen < 3)
 						 {
-							 ws = 0;
+							 pz->Words->RemoveAt(pz->Words->Count - 1);
+							 x--;
+
+							 for (; maxlen > -1; maxlen--, x++)
+							 {
+								 pz->Words->Add(gcnew PZWord(BoxType::Blank, x, y));
+							 }
 						 }
 					 }
-					 while (ws > 0);
+					 while (maxlen > 0);
 
-					 a = a->TrimEnd('\1') + "\n";
+					 if (pz->Words[pz->Words->Count - 1]->BType == BoxType::Black)
+					 {
+						 pz->Words->RemoveAt(pz->Words->Count - 1);
+					 }
 				 }
+
+				 return pz;
+			 }
+
+	private: TextBox^ CreateWordBox(String^ chr, int x, int y) {
+				 TextBox^ tb = gcnew TextBox();
+
+				 tb->MaxLength    = 1;
+				 tb->BorderStyle  = BorderStyle::FixedSingle;
+				 tb->Font         = gcnew Drawing::Font(L"Segoe UI Semibold", 12, FontStyle::Bold, GraphicsUnit::Point, static_cast<Byte>(0));
+				 tb->Location     = Drawing::Point(x * 33, y * 28);
+				 tb->Size         = Drawing::Size(34, 29);
+				 tb->TextAlign    = HorizontalAlignment::Center;
+				 tb->Text         = chr;
+				 //tb->Tag          = tba;
+				 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
+				 tb->LostFocus   += gcnew EventHandler(this, &MainForm::puzzleTextBox_LostFocus);
+				 tb->MouseUp     += gcnew MouseEventHandler(this, &MainForm::puzzleTextBox_MouseUp);
+				 tb->TextChanged += gcnew EventHandler(this, &MainForm::puzzleTextBox_TextChanged);
+				 tb->MouseEnter  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseEnter);
+				 tb->MouseLeave  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseLeave);
+
+				 gamePanel->Controls->Add(tb);
+
+				 return tb;
+			 }
+
+	private: TextBox^ CreateBlackBox(int x, int y) {
+				 TextBox^ tb = gcnew TextBox();
+
+				 tb->Enabled     = false;
+				 tb->Font        = gcnew Drawing::Font(L"Segoe UI Semibold", 12, FontStyle::Bold, GraphicsUnit::Point, static_cast<Byte>(0));
+				 tb->BackColor   = SystemColors::ControlDarkDark;
+				 tb->BorderStyle = BorderStyle::FixedSingle;
+				 tb->Location    = Drawing::Point(x * 33, y * 28);
+				 tb->Size        = Drawing::Size(34, 29);
+
+				 gamePanel->Controls->Add(tb);
+
+				 return tb;
+			 }
+
+	private: Void newPuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
+				 introLabel->Visible = false;
+				 gamePanel->Visible = true;
 
 				 Generic::List<TextBox^>^ tba = gcnew Generic::List<TextBox^>();
 
@@ -286,7 +341,62 @@ namespace CrosswordPuzzle
 				 gamePanel->SuspendLayout();
 				 gamePanel->Controls->Clear();
 
-				 int x = 0, y = 0, xm = 0;
+				 Puzzle^ pz = GeneratePuzzle();
+
+				 int x, y, xm = 0, ym = 0;
+
+				 for each (PZWord^ word in pz->Words)
+				 {
+					 x = word->Pos->X;
+					 y = word->Pos->Y;
+
+					 switch (word->BType)
+					 {
+					 default:
+				   //case BoxType::Blank:
+						 break;
+
+					 case BoxType::Black:
+					 case BoxType::Blank:
+						 CreateBlackBox(x, y);
+						 break;
+
+					 case BoxType::Word:
+						 for (int i = 0; i < word->Word->Text->Length; i++)
+						 {
+							 TextBox^ tb = CreateWordBox(word->Word->Text[i].ToString(), x, y);
+
+							 /*if (tba->Count == 0)
+							 {
+							 Label^ lbl = gcnew Label();
+
+							 lbl->BackColor = tb->BackColor;
+							 lbl->Font      = gcnew Drawing::Font(L"Microsoft Sans Serif", 6.75F, FontStyle::Regular, GraphicsUnit::Point, static_cast<Byte>(0));
+							 lbl->Location  = Drawing::Point((x - 1) * 33 + 1, y * 28 + 1);
+							 lbl->Size      = Drawing::Size(7, 9);
+							 lbl->TextAlign = ContentAlignment::BottomCenter;
+							 lbl->UseCompatibleTextRendering = true;
+							 lbl->Text      = gcnew String(65+(i%26), 1);
+
+							 gamePanel->Controls->Add(lbl);
+							 }*/
+							 tb->Tag = tba;
+							 tba->Add(tb);
+
+							 switch (word->Pos->Dir)
+							 {
+								 case Direction::Across: x++; break;
+								 case Direction::Down:   y++; break;
+							 }
+						 }
+						 break;
+					 }
+
+					 xm = x > xm ? x : xm;
+					 ym = y > ym ? y : ym;
+				 }
+
+				 /*int x = 0, y = 0, xm = 0;
 				 for (int i = 0; i < a->Length; i++)
 				 {
 					 xm = Math::Max(x, xm);
@@ -353,10 +463,10 @@ namespace CrosswordPuzzle
 					 }
 
 					 gamePanel->Controls->Add(tb);
-				 }
+				 }*/
 
-				 this->Height = 110 + (28 * (y));
-				 this->Width  = 41 + (33 * (xm));
+				 this->Height = 110 + (28 * (ym + 1));
+				 this->Width  = 41 + (33 * xm);
 				 this->CenterToScreen();
 
 				 this->Refresh();

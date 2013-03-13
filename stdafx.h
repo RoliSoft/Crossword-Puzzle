@@ -6,8 +6,12 @@
 //#include "iostream"
 //#include "fstream"
 
+// the succession of the **Word objects are:
+// DBWord -> PZWord -> UIWord
+
 #include "WordList.h"
 #include "SynonymList.h"
 #include "WordNetList.h"
+#include "Puzzle.h"
 #include "UIWord.h"
 #include "MainForm.h"
