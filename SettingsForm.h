@@ -184,7 +184,7 @@ namespace CrosswordPuzzle {
 			// pictureBox2
 			// 
 			this->pictureBox2->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"pictureBox2.Image")));
-			this->pictureBox2->Location = System::Drawing::Point(12, 43);
+			this->pictureBox2->Location = System::Drawing::Point(12, 42);
 			this->pictureBox2->Name = L"pictureBox2";
 			this->pictureBox2->Size = System::Drawing::Size(16, 16);
 			this->pictureBox2->TabIndex = 7;
@@ -225,7 +225,7 @@ namespace CrosswordPuzzle {
 			// pictureBox3
 			// 
 			this->pictureBox3->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"pictureBox3.Image")));
-			this->pictureBox3->Location = System::Drawing::Point(12, 68);
+			this->pictureBox3->Location = System::Drawing::Point(12, 69);
 			this->pictureBox3->Name = L"pictureBox3";
 			this->pictureBox3->Size = System::Drawing::Size(16, 16);
 			this->pictureBox3->TabIndex = 11;

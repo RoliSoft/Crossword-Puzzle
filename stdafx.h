@@ -5,6 +5,7 @@
 
 //#include "iostream"
 //#include "fstream"
+#include "math.h"
 
 #include "WordList.h"
 #include "SynonymList.h"
@@ -13,4 +14,5 @@
 #include "UIWord.h"
 #include "Puzzle.h"
 #include "SettingsForm.h"
+#include "AboutForm.h"
 #include "MainForm.h"
