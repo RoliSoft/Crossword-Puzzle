@@ -11,6 +11,7 @@ namespace CrosswordPuzzle
 	using namespace System::Drawing;
 	using namespace System::Threading;
 	using namespace System::Runtime::InteropServices;
+	using namespace XPTable::Models;
 
 	/// <summary>
 	/// Summary for MainForm
@@ -35,7 +36,6 @@ namespace CrosswordPuzzle
 			}
 		}
 	private: System::Windows::Forms::StatusStrip^  statusStrip;
-	protected: 
 	private: System::Windows::Forms::MenuStrip^  menuStrip;
 	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  newPuzzleToolStripMenuItem;
@@ -47,15 +47,16 @@ namespace CrosswordPuzzle
 	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
 	private: System::Windows::Forms::Panel^  gamePanel;
 	private: System::Windows::Forms::ToolStripStatusLabel^  toolStripStatusLabel;
-
-
-
+	private: System::Windows::Forms::ToolTip^  toolTip;
+	private: XPTable::Models::Table^  clueBox;
+	private: XPTable::Models::ColumnModel^  columnModel;
+	private: XPTable::Models::TextColumn^  textColumn;
+	private: System::ComponentModel::IContainer^  components;
 
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -64,7 +65,10 @@ namespace CrosswordPuzzle
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainForm::typeid));
+			XPTable::Models::DataSourceColumnBinder^  dataSourceColumnBinder1 = (gcnew XPTable::Models::DataSourceColumnBinder());
+			XPTable::Renderers::DragDropRenderer^  dragDropRenderer1 = (gcnew XPTable::Renderers::DragDropRenderer());
 			this->statusStrip = (gcnew System::Windows::Forms::StatusStrip());
 			this->toolStripStatusLabel = (gcnew System::Windows::Forms::ToolStripStatusLabel());
 			this->menuStrip = (gcnew System::Windows::Forms::MenuStrip());
@@ -77,8 +81,13 @@ namespace CrosswordPuzzle
 			this->exitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->introLabel = (gcnew System::Windows::Forms::Label());
 			this->gamePanel = (gcnew System::Windows::Forms::Panel());
+			this->toolTip = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->clueBox = (gcnew XPTable::Models::Table());
+			this->columnModel = (gcnew XPTable::Models::ColumnModel());
+			this->textColumn = (gcnew XPTable::Models::TextColumn());
 			this->statusStrip->SuspendLayout();
 			this->menuStrip->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->clueBox))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// statusStrip
@@ -117,20 +126,20 @@ namespace CrosswordPuzzle
 			this->newPuzzleToolStripMenuItem->Enabled = false;
 			this->newPuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"newPuzzleToolStripMenuItem.Image")));
 			this->newPuzzleToolStripMenuItem->Name = L"newPuzzleToolStripMenuItem";
-			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->newPuzzleToolStripMenuItem->Text = L"New puzzle";
 			this->newPuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::newPuzzleToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(133, 6);
 			// 
 			// loadPuzzleToolStripMenuItem
 			// 
 			this->loadPuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"loadPuzzleToolStripMenuItem.Image")));
 			this->loadPuzzleToolStripMenuItem->Name = L"loadPuzzleToolStripMenuItem";
-			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->loadPuzzleToolStripMenuItem->Text = L"Load puzzle";
 			// 
 			// savePuzzleToolStripMenuItem
@@ -138,19 +147,19 @@ namespace CrosswordPuzzle
 			this->savePuzzleToolStripMenuItem->Enabled = false;
 			this->savePuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"savePuzzleToolStripMenuItem.Image")));
 			this->savePuzzleToolStripMenuItem->Name = L"savePuzzleToolStripMenuItem";
-			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->savePuzzleToolStripMenuItem->Text = L"Save puzzle";
 			// 
 			// toolStripSeparator1
 			// 
 			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(149, 6);
+			this->toolStripSeparator1->Size = System::Drawing::Size(133, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"exitToolStripMenuItem.Image")));
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
 			// 
@@ -181,11 +190,54 @@ namespace CrosswordPuzzle
 			this->gamePanel->TabIndex = 3;
 			this->gamePanel->Visible = false;
 			// 
+			// clueBox
+			// 
+			this->clueBox->AlternatingRowColor = System::Drawing::Color::WhiteSmoke;
+			this->clueBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->clueBox->AutoCalculateRowHeights = true;
+			this->clueBox->BorderColor = System::Drawing::Color::Black;
+			this->clueBox->ColumnModel = this->columnModel;
+			this->clueBox->DataMember = nullptr;
+			this->clueBox->DataSourceColumnBinder = dataSourceColumnBinder1;
+			dragDropRenderer1->ForeColor = System::Drawing::Color::Red;
+			this->clueBox->DragDropRenderer = dragDropRenderer1;
+			this->clueBox->EnableHeaderContextMenu = false;
+			this->clueBox->EnableWordWrap = true;
+			this->clueBox->Font = (gcnew System::Drawing::Font(L"Segoe UI", 11.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(0)));
+			this->clueBox->GridLinesContrainedToData = false;
+			this->clueBox->HeaderFont = (gcnew System::Drawing::Font(L"Segoe UI", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(0)));
+			this->clueBox->HeaderStyle = System::Windows::Forms::ColumnHeaderStyle::None;
+			this->clueBox->Location = System::Drawing::Point(129, 36);
+			this->clueBox->Name = L"clueBox";
+			this->clueBox->NoItemsText = L"";
+			this->clueBox->ShowSelectionRectangle = false;
+			this->clueBox->Size = System::Drawing::Size(300, 125);
+			this->clueBox->TabIndex = 4;
+			this->clueBox->UnfocusedBorderColor = System::Drawing::Color::Black;
+			this->clueBox->UnfocusedSelectionBackColor = System::Drawing::SystemColors::ActiveCaption;
+			this->clueBox->Visible = false;
+			// 
+			// columnModel
+			// 
+			this->columnModel->Columns->AddRange(gcnew cli::array< XPTable::Models::Column^  >(1) {this->textColumn});
+			// 
+			// textColumn
+			// 
+			this->textColumn->Editable = false;
+			this->textColumn->ImageOnRight = true;
+			this->textColumn->IsTextTrimmed = false;
+			this->textColumn->Text = L"Clue";
+			this->textColumn->Width = 275;
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(441, 196);
+			this->Controls->Add(this->clueBox);
 			this->Controls->Add(this->introLabel);
 			this->Controls->Add(this->statusStrip);
 			this->Controls->Add(this->menuStrip);
@@ -202,6 +254,7 @@ namespace CrosswordPuzzle
 			this->statusStrip->PerformLayout();
 			this->menuStrip->ResumeLayout(false);
 			this->menuStrip->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->clueBox))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -246,7 +299,7 @@ namespace CrosswordPuzzle
 				 Random^ rand = gcnew Random();
 				 UIWord^ cwrd = nullptr;
 				 
-				 for (int i = 0, x = 0, y = 0; i < 10; i++, x = 0, y++)
+				 for (int i = 0, j = 1, x = 0, y = 0; i < 10; i++, x = 0, y++)
 				 {
 					 int maxlen = len;
 
@@ -262,7 +315,7 @@ namespace CrosswordPuzzle
 					 {
 						 DBWord^ word = _words->GetWord(2, maxlen);
 
-						 UIWord^ uwrd = gcnew UIWord(gcnew PZWord(word, x, y, Direction::Across));
+						 UIWord^ uwrd = gcnew UIWord(gcnew PZWord(word, x, y, Direction::Across), j++);
 						 uwrd->PrevWord = cwrd;
 						 pz->Words->Add(uwrd);
 
@@ -344,7 +397,7 @@ namespace CrosswordPuzzle
 				Label^ lbl = gcnew Label();
 
 				lbl->Text      = chr;
-				lbl->BackColor = SystemColors::Control;
+				lbl->BackColor = SystemColors::Window;
 				lbl->Font      = gcnew Drawing::Font(L"Microsoft Sans Serif", 6.75F, FontStyle::Regular, GraphicsUnit::Point, static_cast<Byte>(0));
 				lbl->Location  = Drawing::Point(x * 33 + 1, y * 28 + 1);
 				lbl->Size      = Drawing::Size(7, 9);
@@ -357,19 +410,17 @@ namespace CrosswordPuzzle
 			}
 
 	private: Void newPuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
-				 introLabel->Visible = false;
-				 gamePanel->Visible = true;
-
-				 Generic::List<TextBox^>^ tba = gcnew Generic::List<TextBox^>();
-
 				 gamePanel->Visible = false;
+				 clueBox->Visible = false;
 				 introLabel->Text = "Generating new puzzle...";
 				 toolStripStatusLabel->Text = "Generating puzzle...";
 				 introLabel->Visible = true;
 				 this->Refresh();
 				 gamePanel->SuspendLayout();
 				 gamePanel->Controls->Clear();
+				 clueBox->BeginUpdate();
 
+				 TableModel^ model = gcnew TableModel();
 				 _puzzle = GeneratePuzzle(22);
 
 				 int x, y, xm = 0, ym = 0;
@@ -391,7 +442,16 @@ namespace CrosswordPuzzle
 						 break;
 
 					 case BoxType::Word:
-						 word->Char = CreateLabel(gcnew String(65+(x%26), 1), x, y);
+						 String^ idx = word->Index < 10 ? word->Index.ToString() : gcnew String(55 + word->Index, 1);
+						 word->Char = CreateLabel(idx, x, y);
+
+						 //clueBox->Items->Add(idx + ") " + word->Word->Word->Clue + Environment::NewLine);
+
+						 Row^ row = gcnew Row();
+						 Cell^ cell = gcnew Cell(idx + ") " + word->Word->Word->Clue);
+						 cell->WordWrap = true;
+						 row->Cells->Add(cell);
+						 model->Rows->Add(row);
 
 						 for (int i = 0; i < word->Word->Word->Text->Length; i++)
 						 {
@@ -412,13 +472,17 @@ namespace CrosswordPuzzle
 					 ym = y > ym ? y : ym;
 				 }
 
+				 clueBox->TableModel = model;
+				 clueBox->EndUpdate();
+
 				 this->Height = 110 + (28 * (ym + 1));
-				 this->Width  = 41 + (33 * xm);
+				 this->Width  = 41 + (33 * xm) + 312;
 				 this->CenterToScreen();
 
 				 this->Refresh();
 				 gamePanel->ResumeLayout();
 
+				 clueBox->Visible = true;
 				 gamePanel->Visible = true;
 				 introLabel->Visible = false;
 				 toolStripStatusLabel->Text = "Ready.";
@@ -429,6 +493,11 @@ namespace CrosswordPuzzle
 			 }
 
 	private: Void puzzleTextBox_KeyDown(Object^  sender, KeyEventArgs^  e) {
+				 if (toolTip->Active)
+				 {
+					 toolTip->Hide(this);
+				 }
+
 				 TextBox^ tb  = static_cast<TextBox^>(sender);
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
@@ -572,6 +641,12 @@ namespace CrosswordPuzzle
 				 if (!Char::IsLetter(e->KeyChar) && e->KeyChar != 8)
 				 {
 					 e->Handled = true;
+
+					 TextBox^ tb = static_cast<TextBox^>(sender);
+
+					 toolTip->ToolTipIcon = ToolTipIcon::Error;
+					 toolTip->ToolTipTitle = "Invalid character";
+					 toolTip->Show("Only letters are allowed.", tb);
 				 }
 			 }
 
@@ -613,7 +688,12 @@ namespace CrosswordPuzzle
 
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
+				 clueBox->TableModel->Selections->Clear();
+				 clueBox->TableModel->Selections->AddCell(word->Index - 1, 0);
+				 clueBox->EnsureVisible(word->Index - 1, 0);
+
 				 gamePanel->SuspendLayout();
+				 word->Char->BackColor = SystemColors::ControlLight;
 				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::ControlLight;
@@ -628,6 +708,7 @@ namespace CrosswordPuzzle
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
+				 word->Char->BackColor = SystemColors::Window;
 				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::Window;
@@ -655,6 +736,7 @@ namespace CrosswordPuzzle
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
+				 word->Char->BackColor = SystemColors::Control;
 				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::Control;
@@ -673,6 +755,7 @@ namespace CrosswordPuzzle
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
+				 word->Char->BackColor = SystemColors::Window;
 				 for each (TextBox^ tc in word->TextBoxes)
 				 {
 					 tc->BackColor = SystemColors::Window;

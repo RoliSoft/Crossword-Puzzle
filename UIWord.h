@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace CrosswordPuzzle
 {
@@ -18,6 +18,7 @@ namespace CrosswordPuzzle
 		List<TextBox^>^ TextBoxes;
 		UIWord^ NextWord;
 		UIWord^ PrevWord;
+		int Index;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UIWord" /> class.
@@ -26,6 +27,16 @@ namespace CrosswordPuzzle
 		{
 			Word      = word;
 			TextBoxes = gcnew List<TextBox^>();
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UIWord" /> class.
+		/// </summary>
+		UIWord(PZWord^ word, int index)
+		{
+			Word      = word;
+			TextBoxes = gcnew List<TextBox^>();
+			Index     = index;
 		}
 	};
 }
