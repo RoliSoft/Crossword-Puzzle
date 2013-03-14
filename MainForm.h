@@ -19,6 +19,9 @@ namespace CrosswordPuzzle
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
 	public:
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MainForm" /> class.
+		/// </summary>
 		MainForm(void)
 		{
 			InitializeComponent();
@@ -51,6 +54,7 @@ namespace CrosswordPuzzle
 	private: XPTable::Models::Table^  clueBox;
 	private: XPTable::Models::ColumnModel^  columnModel;
 	private: XPTable::Models::TextColumn^  textColumn;
+	private: System::Windows::Forms::ToolStripMenuItem^  puzzleOptionsToolStripMenuItem;
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -85,6 +89,7 @@ namespace CrosswordPuzzle
 			this->clueBox = (gcnew XPTable::Models::Table());
 			this->columnModel = (gcnew XPTable::Models::ColumnModel());
 			this->textColumn = (gcnew XPTable::Models::TextColumn());
+			this->puzzleOptionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->statusStrip->SuspendLayout();
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->clueBox))->BeginInit();
@@ -115,8 +120,9 @@ namespace CrosswordPuzzle
 			// 
 			// fileToolStripMenuItem
 			// 
-			this->fileToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->newPuzzleToolStripMenuItem, 
-				this->toolStripSeparator2, this->loadPuzzleToolStripMenuItem, this->savePuzzleToolStripMenuItem, this->toolStripSeparator1, this->exitToolStripMenuItem});
+			this->fileToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(7) {this->newPuzzleToolStripMenuItem, 
+				this->puzzleOptionsToolStripMenuItem, this->toolStripSeparator2, this->loadPuzzleToolStripMenuItem, this->savePuzzleToolStripMenuItem, 
+				this->toolStripSeparator1, this->exitToolStripMenuItem});
 			this->fileToolStripMenuItem->Name = L"fileToolStripMenuItem";
 			this->fileToolStripMenuItem->Size = System::Drawing::Size(37, 20);
 			this->fileToolStripMenuItem->Text = L"File";
@@ -126,20 +132,20 @@ namespace CrosswordPuzzle
 			this->newPuzzleToolStripMenuItem->Enabled = false;
 			this->newPuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"newPuzzleToolStripMenuItem.Image")));
 			this->newPuzzleToolStripMenuItem->Name = L"newPuzzleToolStripMenuItem";
-			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->newPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->newPuzzleToolStripMenuItem->Text = L"New puzzle";
 			this->newPuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::newPuzzleToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this->toolStripSeparator2->Name = L"toolStripSeparator2";
-			this->toolStripSeparator2->Size = System::Drawing::Size(133, 6);
+			this->toolStripSeparator2->Size = System::Drawing::Size(149, 6);
 			// 
 			// loadPuzzleToolStripMenuItem
 			// 
 			this->loadPuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"loadPuzzleToolStripMenuItem.Image")));
 			this->loadPuzzleToolStripMenuItem->Name = L"loadPuzzleToolStripMenuItem";
-			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->loadPuzzleToolStripMenuItem->Text = L"Load puzzle";
 			// 
 			// savePuzzleToolStripMenuItem
@@ -147,19 +153,19 @@ namespace CrosswordPuzzle
 			this->savePuzzleToolStripMenuItem->Enabled = false;
 			this->savePuzzleToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"savePuzzleToolStripMenuItem.Image")));
 			this->savePuzzleToolStripMenuItem->Name = L"savePuzzleToolStripMenuItem";
-			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->savePuzzleToolStripMenuItem->Text = L"Save puzzle";
 			// 
 			// toolStripSeparator1
 			// 
 			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(133, 6);
+			this->toolStripSeparator1->Size = System::Drawing::Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"exitToolStripMenuItem.Image")));
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
 			// 
@@ -233,6 +239,14 @@ namespace CrosswordPuzzle
 			this->textColumn->Text = L"Clue";
 			this->textColumn->Width = 275;
 			// 
+			// puzzleOptionsToolStripMenuItem
+			// 
+			this->puzzleOptionsToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"puzzleOptionsToolStripMenuItem.Image")));
+			this->puzzleOptionsToolStripMenuItem->Name = L"puzzleOptionsToolStripMenuItem";
+			this->puzzleOptionsToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->puzzleOptionsToolStripMenuItem->Text = L"Puzzle options";
+			this->puzzleOptionsToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::puzzleOptionsToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -264,10 +278,18 @@ namespace CrosswordPuzzle
 
 	private: WordList^ _words;
 			 Puzzle^ _puzzle;
+			 int _puzzleWidth;
+			 int _puzzleHeight;
+			 int _dbSelIdx;
+			 bool _initFill;
 
 	private: Void MainForm_Load(System::Object^  sender, System::EventArgs^  e) {
 				 Control::CheckForIllegalCrossThreadCalls = false;
 				 this->Visible = true;
+
+				 _puzzleWidth  = 26;
+				 _puzzleHeight = 15;
+				 _dbSelIdx     = 2;
 
 				 ThreadStart^ tst = gcnew ThreadStart(this, &MainForm::InitialLoadDictionary);
 				 Thread^ thd = gcnew Thread(tst);
@@ -278,11 +300,30 @@ namespace CrosswordPuzzle
 				 toolStripStatusLabel->Text = "Loading dictionary...";
 				 this->Refresh();
 
-				 _words = gcnew SynonymList();
-
 				 try
 				 {
-					 _words->LoadFile("th_hu_HU_v2.dat");
+					 switch (_dbSelIdx)
+					 {
+					 case 0:
+						 _words = gcnew WordNetList();
+						 _words->LoadFile("wordnet_3.0.all.dat");
+						 break;
+
+					 case 1:
+						 _words = gcnew SynonymList();
+						 _words->LoadFile("th_en_US_v2.dat");
+						 break;
+
+					 case 2:
+						 _words = gcnew SynonymList();
+						 _words->LoadFile("th_hu_HU_v2.dat");
+						 break;
+
+					 case 3:
+						 _words = gcnew SynonymList();
+						 _words->LoadFile("th_ro_RO_v2.dat");
+						 break;
+					 }
 				 }
 				 catch (Exception^ ex)
 				 {
@@ -456,7 +497,7 @@ namespace CrosswordPuzzle
 
 				 Random^ rand = gcnew Random();
 				 TableModel^ model = gcnew TableModel();
-				 _puzzle = GeneratePuzzle(26, 15);
+				 _puzzle = GeneratePuzzle(_puzzleWidth, _puzzleHeight);
 
 				 int x, y, xm = 0, ym = 0;
 
@@ -489,7 +530,7 @@ namespace CrosswordPuzzle
 
 						 for (int i = 0; i < word->Word->Word->Text->Length; i++)
 						 {
-							 word->TextBoxes->Add(CreateWordBox(word, i, x, y, rand->Next(0, 5) == 3));
+							 word->TextBoxes->Add(CreateWordBox(word, i, x, y, _initFill && rand->Next(0, 5) == 3));
 
 							 switch (word->Word->Pos->Dir)
 							 {
@@ -832,6 +873,25 @@ namespace CrosswordPuzzle
 					 }
 				 }
 				 catch (Exception^) { }
+			 }
+
+	private: System::Void puzzleOptionsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+				 SettingsForm^ sf = gcnew SettingsForm(_puzzleWidth, _puzzleHeight, _dbSelIdx, _initFill);
+				 sf->ShowDialog(this);
+
+				 _puzzleWidth  = sf->PuzzleWidth;
+				 _puzzleHeight = sf->PuzzleHeight;
+				 _initFill     = sf->AutoFill;
+
+				 if (_dbSelIdx != sf->DbSelIdx)
+				 {
+					 _dbSelIdx = sf->DbSelIdx;
+					 newPuzzleToolStripMenuItem->Enabled = false;
+
+					 ThreadStart^ tst = gcnew ThreadStart(this, &MainForm::InitialLoadDictionary);
+					 Thread^ thd = gcnew Thread(tst);
+					 thd->Start();
+				 }
 			 }
 };
 }
