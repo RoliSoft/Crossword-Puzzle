@@ -3,6 +3,7 @@
 namespace CrosswordPuzzle
 {
 	using namespace System;
+	using namespace System::IO;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Collections::Generic;
@@ -91,19 +92,19 @@ namespace CrosswordPuzzle
 			this->savePuzzleToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->exitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->puzzleToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->puzzleOptionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->toolStripSeparator3 = (gcnew System::Windows::Forms::ToolStripSeparator());
+			this->randomHelpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->resetToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->introLabel = (gcnew System::Windows::Forms::Label());
 			this->gamePanel = (gcnew System::Windows::Forms::Panel());
 			this->toolTip = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->clueBox = (gcnew XPTable::Models::Table());
 			this->columnModel = (gcnew XPTable::Models::ColumnModel());
 			this->textColumn = (gcnew XPTable::Models::TextColumn());
-			this->puzzleToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->puzzleOptionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolStripSeparator3 = (gcnew System::Windows::Forms::ToolStripSeparator());
-			this->resetToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->randomHelpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->statusStrip->SuspendLayout();
 			this->menuStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->clueBox))->BeginInit();
@@ -161,6 +162,7 @@ namespace CrosswordPuzzle
 			this->loadPuzzleToolStripMenuItem->Name = L"loadPuzzleToolStripMenuItem";
 			this->loadPuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->loadPuzzleToolStripMenuItem->Text = L"Load puzzle";
+			this->loadPuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::loadPuzzleToolStripMenuItem_Click);
 			// 
 			// savePuzzleToolStripMenuItem
 			// 
@@ -169,6 +171,7 @@ namespace CrosswordPuzzle
 			this->savePuzzleToolStripMenuItem->Name = L"savePuzzleToolStripMenuItem";
 			this->savePuzzleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->savePuzzleToolStripMenuItem->Text = L"Save puzzle";
+			this->savePuzzleToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::savePuzzleToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -182,6 +185,60 @@ namespace CrosswordPuzzle
 			this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
+			// 
+			// puzzleToolStripMenuItem
+			// 
+			this->puzzleToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->puzzleOptionsToolStripMenuItem, 
+				this->toolStripSeparator3, this->randomHelpToolStripMenuItem, this->resetToolStripMenuItem});
+			this->puzzleToolStripMenuItem->Name = L"puzzleToolStripMenuItem";
+			this->puzzleToolStripMenuItem->Size = System::Drawing::Size(52, 20);
+			this->puzzleToolStripMenuItem->Text = L"Puzzle";
+			// 
+			// puzzleOptionsToolStripMenuItem
+			// 
+			this->puzzleOptionsToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"puzzleOptionsToolStripMenuItem.Image")));
+			this->puzzleOptionsToolStripMenuItem->Name = L"puzzleOptionsToolStripMenuItem";
+			this->puzzleOptionsToolStripMenuItem->Size = System::Drawing::Size(116, 22);
+			this->puzzleOptionsToolStripMenuItem->Text = L"Options";
+			this->puzzleOptionsToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::puzzleOptionsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator3
+			// 
+			this->toolStripSeparator3->Name = L"toolStripSeparator3";
+			this->toolStripSeparator3->Size = System::Drawing::Size(113, 6);
+			// 
+			// randomHelpToolStripMenuItem
+			// 
+			this->randomHelpToolStripMenuItem->Enabled = false;
+			this->randomHelpToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"randomHelpToolStripMenuItem.Image")));
+			this->randomHelpToolStripMenuItem->Name = L"randomHelpToolStripMenuItem";
+			this->randomHelpToolStripMenuItem->Size = System::Drawing::Size(116, 22);
+			this->randomHelpToolStripMenuItem->Text = L"Help";
+			this->randomHelpToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::randomHelpToolStripMenuItem_Click);
+			// 
+			// resetToolStripMenuItem
+			// 
+			this->resetToolStripMenuItem->Enabled = false;
+			this->resetToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"resetToolStripMenuItem.Image")));
+			this->resetToolStripMenuItem->Name = L"resetToolStripMenuItem";
+			this->resetToolStripMenuItem->Size = System::Drawing::Size(116, 22);
+			this->resetToolStripMenuItem->Text = L"Reset";
+			this->resetToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::resetToolStripMenuItem_Click);
+			// 
+			// helpToolStripMenuItem
+			// 
+			this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->aboutToolStripMenuItem});
+			this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
+			this->helpToolStripMenuItem->Size = System::Drawing::Size(44, 20);
+			this->helpToolStripMenuItem->Text = L"Help";
+			// 
+			// aboutToolStripMenuItem
+			// 
+			this->aboutToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"aboutToolStripMenuItem.Image")));
+			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(107, 22);
+			this->aboutToolStripMenuItem->Text = L"About";
+			this->aboutToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::aboutToolStripMenuItem_Click);
 			// 
 			// introLabel
 			// 
@@ -252,60 +309,6 @@ namespace CrosswordPuzzle
 			this->textColumn->IsTextTrimmed = false;
 			this->textColumn->Text = L"Clue";
 			this->textColumn->Width = 275;
-			// 
-			// puzzleToolStripMenuItem
-			// 
-			this->puzzleToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->puzzleOptionsToolStripMenuItem, 
-				this->toolStripSeparator3, this->randomHelpToolStripMenuItem, this->resetToolStripMenuItem});
-			this->puzzleToolStripMenuItem->Name = L"puzzleToolStripMenuItem";
-			this->puzzleToolStripMenuItem->Size = System::Drawing::Size(52, 20);
-			this->puzzleToolStripMenuItem->Text = L"Puzzle";
-			// 
-			// puzzleOptionsToolStripMenuItem
-			// 
-			this->puzzleOptionsToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"puzzleOptionsToolStripMenuItem.Image")));
-			this->puzzleOptionsToolStripMenuItem->Name = L"puzzleOptionsToolStripMenuItem";
-			this->puzzleOptionsToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->puzzleOptionsToolStripMenuItem->Text = L"Options";
-			this->puzzleOptionsToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::puzzleOptionsToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator3
-			// 
-			this->toolStripSeparator3->Name = L"toolStripSeparator3";
-			this->toolStripSeparator3->Size = System::Drawing::Size(149, 6);
-			// 
-			// resetToolStripMenuItem
-			// 
-			this->resetToolStripMenuItem->Enabled = false;
-			this->resetToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"resetToolStripMenuItem.Image")));
-			this->resetToolStripMenuItem->Name = L"resetToolStripMenuItem";
-			this->resetToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->resetToolStripMenuItem->Text = L"Reset";
-			this->resetToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::resetToolStripMenuItem_Click);
-			// 
-			// randomHelpToolStripMenuItem
-			// 
-			this->randomHelpToolStripMenuItem->Enabled = false;
-			this->randomHelpToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"randomHelpToolStripMenuItem.Image")));
-			this->randomHelpToolStripMenuItem->Name = L"randomHelpToolStripMenuItem";
-			this->randomHelpToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->randomHelpToolStripMenuItem->Text = L"Help";
-			this->randomHelpToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::randomHelpToolStripMenuItem_Click);
-			// 
-			// helpToolStripMenuItem
-			// 
-			this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->aboutToolStripMenuItem});
-			this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
-			this->helpToolStripMenuItem->Size = System::Drawing::Size(44, 20);
-			this->helpToolStripMenuItem->Text = L"Help";
-			// 
-			// aboutToolStripMenuItem
-			// 
-			this->aboutToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"aboutToolStripMenuItem.Image")));
-			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->aboutToolStripMenuItem->Text = L"About";
-			this->aboutToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::aboutToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -1018,6 +1021,54 @@ namespace CrosswordPuzzle
 
 	private: Void aboutToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
 				 (gcnew AboutForm())->ShowDialog(this);
+			 }
+
+	private: Void savePuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
+				 SaveFileDialog^ sfd  = gcnew SaveFileDialog();
+				 
+				 sfd->Title           = "Save current puzzle";
+				 sfd->CheckPathExists = true;
+				 sfd->CheckFileExists = false;
+				 sfd->DefaultExt      = ".pzl";
+				 sfd->OverwritePrompt = true;
+				 sfd->ValidateNames   = true;
+				 sfd->Filter          = "Puzzle Saves (*.pzl)|*.pzl|All Files (*.*)|*.*";
+
+				 if (sfd->ShowDialog(this) != Windows::Forms::DialogResult::OK)
+				 {
+					 return;
+				 }
+
+				 FileStream^ fs   = File::OpenWrite(sfd->FileName);
+				 BinaryWriter^ bw = gcnew BinaryWriter(fs, Encoding::UTF8);
+
+				 bw->Write(_puzzle->Words->Count);
+
+				 for each (UIWord^ word in _puzzle->Words)
+				 {
+					 bw->Write(word->Index);
+					 bw->Write(word->Word->BType);
+					 bw->Write(word->Word->Pos->X);
+					 bw->Write(word->Word->Pos->Y);
+
+					 if (word->Word->BType == BoxType::Word)
+					 {
+						 bw->Write(word->Word->Pos->Dir);
+						 bw->Write(word->Word->Word->Text);
+						 bw->Write(word->Word->Word->Clue);
+						 bw->Write(word->TextBoxes->Count);
+
+						 for each (TextBox^ tb in word->TextBoxes)
+						 {
+							 bw->Write(tb->Text);
+						 }
+					 }
+				 }
+
+				 bw->Close();
+			 }
+
+	private: Void loadPuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
 			 }
 };
 }
