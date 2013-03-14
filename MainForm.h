@@ -219,6 +219,7 @@ namespace CrosswordPuzzle
 			this->clueBox->UnfocusedBorderColor = System::Drawing::Color::Black;
 			this->clueBox->UnfocusedSelectionBackColor = System::Drawing::SystemColors::ActiveCaption;
 			this->clueBox->Visible = false;
+			this->clueBox->SelectionChanged += gcnew XPTable::Events::SelectionEventHandler(this, &MainForm::clueBox_SelectionChanged);
 			// 
 			// columnModel
 			// 
@@ -353,7 +354,7 @@ namespace CrosswordPuzzle
 				 return pz;
 			 }
 
-	private: TextBox^ CreateWordBox(UIWord^ word, int widx, int x, int y) {
+	private: TextBox^ CreateWordBox(UIWord^ word, int widx, int x, int y, bool fill) {
 				 TextBox^ tb = gcnew TextBox();
 
 				 tb->MaxLength    = 1;
@@ -362,7 +363,7 @@ namespace CrosswordPuzzle
 				 tb->Location     = Drawing::Point(x * 33, y * 28);
 				 tb->Size         = Drawing::Size(34, 29);
 				 tb->TextAlign    = HorizontalAlignment::Center;
-				 tb->Text         = word->Word->Word->Text[widx].ToString();
+				 tb->Text         = fill ? word->Word->Word->Text[widx].ToString() : String::Empty;
 				 tb->Tag          = word;
 				 tb->MouseEnter  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseEnter);
 				 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
@@ -409,6 +410,39 @@ namespace CrosswordPuzzle
 				return lbl;
 			}
 
+	private: Void CheckWord(UIWord^ word) {
+				 for (int i = 0; i < word->TextBoxes->Count; i++)
+				 {
+					 if (word->TextBoxes[i]->TextLength == 0 || word->TextBoxes[i]->Text->ToLower()[0] != word->Word->Word->Text->ToLower()[i])
+					 {
+						 if (word->Char->BackColor == Drawing::Color::Honeydew)
+						 {
+							 gamePanel->SuspendLayout();
+							 word->Char->BackColor = SystemColors::Window;
+							 for each (TextBox^ tc in word->TextBoxes)
+							 {
+								 tc->BackColor = SystemColors::Window;
+							 }
+							 gamePanel->ResumeLayout();
+
+							 clueBox->TableModel->Rows[word->Index - 1]->Cells[0]->BackColor = word->Index % 2 == 0 ? clueBox->BackColor : clueBox->AlternatingRowColor;
+						 }
+
+						 return;
+					 }
+				 }
+
+				 gamePanel->SuspendLayout();
+				 word->Char->BackColor = Drawing::Color::Honeydew;
+				 for each (TextBox^ tc in word->TextBoxes)
+				 {
+					 tc->BackColor = Drawing::Color::Honeydew;
+				 }
+				 gamePanel->ResumeLayout();
+
+				 clueBox->TableModel->Rows[word->Index - 1]->Cells[0]->BackColor = Drawing::Color::Honeydew;
+			}
+
 	private: Void newPuzzleToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
 				 gamePanel->Visible = false;
 				 clueBox->Visible = false;
@@ -420,6 +454,7 @@ namespace CrosswordPuzzle
 				 gamePanel->Controls->Clear();
 				 clueBox->BeginUpdate();
 
+				 Random^ rand = gcnew Random();
 				 TableModel^ model = gcnew TableModel();
 				 _puzzle = GeneratePuzzle(22);
 
@@ -445,17 +480,16 @@ namespace CrosswordPuzzle
 						 String^ idx = word->Index < 10 ? word->Index.ToString() : gcnew String(55 + word->Index, 1);
 						 word->Char = CreateLabel(idx, x, y);
 
-						 //clueBox->Items->Add(idx + ") " + word->Word->Word->Clue + Environment::NewLine);
-
 						 Row^ row = gcnew Row();
 						 Cell^ cell = gcnew Cell(idx + ") " + word->Word->Word->Clue);
 						 cell->WordWrap = true;
+						 cell->Tag = word;
 						 row->Cells->Add(cell);
 						 model->Rows->Add(row);
 
 						 for (int i = 0; i < word->Word->Word->Text->Length; i++)
 						 {
-							 word->TextBoxes->Add(CreateWordBox(word, i, x, y));
+							 word->TextBoxes->Add(CreateWordBox(word, i, x, y, rand->Next(0, 5) == 3));
 
 							 switch (word->Word->Pos->Dir)
 							 {
@@ -463,7 +497,7 @@ namespace CrosswordPuzzle
 								 case Direction::Down:   y++; break;
 							 }
 						 }
-
+						 
 						 word->Char->BringToFront();
 						 break;
 					 }
@@ -660,6 +694,8 @@ namespace CrosswordPuzzle
 
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
+				 CheckWord(word);
+
 				 int idx = word->TextBoxes->IndexOf(tb);
 				 if (idx != word->TextBoxes->Count - 1)
 				 {
@@ -683,14 +719,23 @@ namespace CrosswordPuzzle
 			 }
 
 	private: Void puzzleTextBox_GotFocus(Object^  sender, EventArgs^  e) {
-				 TextBox^ tb = static_cast<TextBox^>(sender);
-				 tb->SelectAll();
-
+				 TextBox^ tb  = static_cast<TextBox^>(sender);
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
-				 clueBox->TableModel->Selections->Clear();
-				 clueBox->TableModel->Selections->AddCell(word->Index - 1, 0);
-				 clueBox->EnsureVisible(word->Index - 1, 0);
+				 tb->SelectAll();
+
+				 if (!clueBox->TableModel->Selections->IsCellSelected(word->Index - 1, 0))
+				 {
+					 clueBox->TableModel->Selections->Clear();
+					 clueBox->TableModel->Selections->AddCell(word->Index - 1, 0);
+					 clueBox->EnsureVisible(clueBox->TableModel->Rows->Count - 1, 0);
+					 clueBox->EnsureVisible(word->Index - 1, 0);
+				 }
+
+				 if (word->Char->BackColor == Drawing::Color::Honeydew)
+				 {
+					 return;
+				 }
 
 				 gamePanel->SuspendLayout();
 				 word->Char->BackColor = SystemColors::ControlLight;
@@ -702,10 +747,15 @@ namespace CrosswordPuzzle
 			 }
 
 	private: Void puzzleTextBox_LostFocus(Object^  sender, EventArgs^  e) {
-				 TextBox^ tb = static_cast<TextBox^>(sender);
+				 TextBox^ tb  = static_cast<TextBox^>(sender);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
+
 				 tb->SelectionLength = 0;
 
-				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
+				 if (word->Char->BackColor == Drawing::Color::Honeydew)
+				 {
+					 return;
+				 }
 
 				 gamePanel->SuspendLayout();
 				 word->Char->BackColor = SystemColors::Window;
@@ -726,14 +776,13 @@ namespace CrosswordPuzzle
 			 }
 
 	private: Void puzzleTextBox_MouseEnter(Object^  sender, EventArgs^  e) {
-				 TextBox^ tb = static_cast<TextBox^>(sender);
+				 TextBox^ tb  = static_cast<TextBox^>(sender);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
-				 if (tb->BackColor == SystemColors::ControlLight)
+				 if (tb->BackColor == SystemColors::ControlLight || word->Char->BackColor == Drawing::Color::Honeydew)
 				 {
 					 return;
 				 }
-
-				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
 				 word->Char->BackColor = SystemColors::Control;
@@ -744,15 +793,14 @@ namespace CrosswordPuzzle
 				 gamePanel->ResumeLayout();
 			 }
 
-	private: Void puzzleTextBox_MouseLeave(Object^  sender, EventArgs^  e) {
-				 TextBox^ tb = static_cast<TextBox^>(sender);
+	private: Void puzzleTextBox_MouseLeave(Object^ sender, EventArgs^ e) {
+				 TextBox^ tb  = static_cast<TextBox^>(sender);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
-				 if (tb->BackColor == SystemColors::ControlLight || tb->BackColor == SystemColors::Window)
+				 if (tb->BackColor == SystemColors::ControlLight || tb->BackColor == SystemColors::Window || word->Char->BackColor == Drawing::Color::Honeydew)
 				 {
 					 return;
 				 }
-
-				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 gamePanel->SuspendLayout();
 				 word->Char->BackColor = SystemColors::Window;
@@ -761,6 +809,28 @@ namespace CrosswordPuzzle
 					 tc->BackColor = SystemColors::Window;
 				 }
 				 gamePanel->ResumeLayout();
+			 }
+
+	private: Void clueBox_SelectionChanged(Object^ sender, XPTable::Events::SelectionEventArgs^ e) {
+				 try
+				 {
+					 UIWord^ word = static_cast<UIWord^>(clueBox->TableModel->Rows[e->NewSelectedIndicies[0]]->Cells[0]->Tag);
+
+					 bool focused = false;
+					 for each (TextBox^ tc in word->TextBoxes)
+					 {
+						 if (tc->ContainsFocus)
+						 {
+							 focused = true;
+						 }
+					 }
+
+					 if (!focused)
+					 {
+						 word->TextBoxes[0]->Focus();
+					 }
+				 }
+				 catch (Exception^) { }
 			 }
 };
 }
