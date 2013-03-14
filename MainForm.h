@@ -209,6 +209,7 @@ namespace CrosswordPuzzle
 #pragma endregion
 
 	private: WordList^ _words;
+			 Puzzle^ _puzzle;
 
 	private: Void MainForm_Load(System::Object^  sender, System::EventArgs^  e) {
 				 Control::CheckForIllegalCrossThreadCalls = false;
@@ -240,14 +241,14 @@ namespace CrosswordPuzzle
 				 toolStripStatusLabel->Text = "Ready.";
 			 }
 
-	private: Puzzle^ GeneratePuzzle() {
+	private: Puzzle^ GeneratePuzzle(int len) {
 				 Puzzle^ pz   = gcnew Puzzle();
 				 Random^ rand = gcnew Random();
 				 UIWord^ cwrd = nullptr;
 				 
 				 for (int i = 0, x = 0, y = 0; i < 10; i++, x = 0, y++)
 				 {
-					 int maxlen = 22;
+					 int maxlen = len;
 
 					 if (rand->Next(0, 2) == 1)
 					 {
@@ -310,12 +311,14 @@ namespace CrosswordPuzzle
 				 tb->TextAlign    = HorizontalAlignment::Center;
 				 tb->Text         = word->Word->Word->Text[widx].ToString();
 				 tb->Tag          = word;
-				 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
-				 tb->LostFocus   += gcnew EventHandler(this, &MainForm::puzzleTextBox_LostFocus);
-				 tb->MouseUp     += gcnew MouseEventHandler(this, &MainForm::puzzleTextBox_MouseUp);
-				 tb->TextChanged += gcnew EventHandler(this, &MainForm::puzzleTextBox_TextChanged);
 				 tb->MouseEnter  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseEnter);
+				 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
+				 tb->MouseUp     += gcnew MouseEventHandler(this, &MainForm::puzzleTextBox_MouseUp);
+				 tb->KeyDown     += gcnew KeyEventHandler(this, &MainForm::puzzleTextBox_KeyDown);
+				 tb->KeyPress    += gcnew KeyPressEventHandler(this, &MainForm::puzzleTextBox_KeyPress);
+				 tb->TextChanged += gcnew EventHandler(this, &MainForm::puzzleTextBox_TextChanged);
 				 tb->MouseLeave  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseLeave);
+				 tb->LostFocus   += gcnew EventHandler(this, &MainForm::puzzleTextBox_LostFocus);
 
 				 gamePanel->Controls->Add(tb);
 
@@ -367,11 +370,11 @@ namespace CrosswordPuzzle
 				 gamePanel->SuspendLayout();
 				 gamePanel->Controls->Clear();
 
-				 Puzzle^ pz = GeneratePuzzle();
+				 _puzzle = GeneratePuzzle(22);
 
 				 int x, y, xm = 0, ym = 0;
 
-				 for each (UIWord^ word in pz->Words)
+				 for each (UIWord^ word in _puzzle->Words)
 				 {
 					 x = word->Word->Pos->X;
 					 y = word->Word->Pos->Y;
@@ -425,8 +428,161 @@ namespace CrosswordPuzzle
 				 Application::ExitThread();
 			 }
 
+	private: Void puzzleTextBox_KeyDown(Object^  sender, KeyEventArgs^  e) {
+				 TextBox^ tb  = static_cast<TextBox^>(sender);
+				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
+
+				 switch (e->KeyData)
+				 {
+				 default:
+					 return;
+
+				 case Keys::Up:
+					 {
+						 int x = word->Word->Pos->X + word->TextBoxes->IndexOf(tb);
+						 int y = word->Word->Pos->Y;
+						 UIWord^ cwrd = word;
+
+						 if (y == 0)
+						 {
+							 while (cwrd->NextWord != nullptr)
+							 {
+								 cwrd = cwrd->NextWord;
+							 }
+
+							 y = cwrd->Word->Pos->Y + 1;
+						 }
+
+						 while (cwrd->Word->Pos->Y == y && cwrd->PrevWord != nullptr)
+						 {
+							 cwrd = cwrd->PrevWord;
+						 }
+
+						 while (cwrd->PrevWord != nullptr && (cwrd->PrevWord->Word->Pos->X + cwrd->PrevWord->TextBoxes->Count) >= x && cwrd->PrevWord->Word->Pos->Y == (y - 1))
+						 {
+							 cwrd = cwrd->PrevWord;
+						 }
+
+						 int idx = x - cwrd->Word->Pos->X;
+						 if (idx >= 0 && idx < cwrd->TextBoxes->Count)
+						 {
+							 cwrd->TextBoxes[idx]->Focus();
+						 }
+						 else if (idx >= 0)
+						 {
+							 cwrd->TextBoxes[cwrd->TextBoxes->Count - 1]->Focus();
+						 }
+					 }
+					break;
+
+				case Keys::Down:
+					{
+						int x = word->Word->Pos->X + word->TextBoxes->IndexOf(tb);
+						int y = word->Word->Pos->Y;
+						UIWord^ cwrd = word;
+
+						while (cwrd->Word->Pos->Y == y && cwrd->NextWord != nullptr)
+						{
+							cwrd = cwrd->NextWord;
+						}
+
+						if (cwrd->NextWord == nullptr && cwrd->Word->Pos->Y == y)
+						{
+							while (cwrd->PrevWord != nullptr)
+							{
+								cwrd = cwrd->PrevWord;
+							}
+
+							y = 0;
+						}
+
+						while ((cwrd->Word->Pos->X + cwrd->TextBoxes->Count) < x && cwrd->NextWord != nullptr)
+						{
+							cwrd = cwrd->NextWord;
+						}
+
+						int idx = x - cwrd->Word->Pos->X;
+						if (idx >= 0 && idx < cwrd->TextBoxes->Count)
+						{
+							cwrd->TextBoxes[idx]->Focus();
+						}
+						else if (idx >= 0 && cwrd->NextWord != nullptr)
+						{
+							cwrd->NextWord->TextBoxes[0]->Focus();
+						}
+					}
+					break;
+
+				case Keys::Left:
+					{
+						int idx = word->TextBoxes->IndexOf(tb);
+						if (idx > 0)
+						{
+							word->TextBoxes[idx - 1]->Focus();
+						}
+						else if (word->PrevWord != nullptr)
+						{
+							word->PrevWord->TextBoxes[word->PrevWord->TextBoxes->Count - 1]->Focus();
+						}
+						else if (word->NextWord != nullptr)
+						{
+							UIWord^ cwrd = word;
+
+							while (cwrd->NextWord != nullptr)
+							{
+								cwrd = cwrd->NextWord;
+							}
+
+							cwrd->TextBoxes[cwrd->TextBoxes->Count - 1]->Focus();
+						}
+					}
+					break;
+
+				case Keys::Right:
+					{
+						int idx = word->TextBoxes->IndexOf(tb);
+						if (idx != word->TextBoxes->Count - 1)
+						{
+							word->TextBoxes[idx + 1]->Focus();
+						}
+						else if (word->NextWord != nullptr)
+						{
+							word->NextWord->TextBoxes[0]->Focus();
+						}
+						else if (word->PrevWord != nullptr)
+						{
+							UIWord^ cwrd = word;
+
+							while (cwrd->PrevWord != nullptr)
+							{
+								cwrd = cwrd->PrevWord;
+							}
+
+							cwrd->TextBoxes[0]->Focus();
+						}
+					}
+					break;
+				 }
+
+				 e->Handled = true;
+				 e->SuppressKeyPress = true;
+			 }
+
+	private: Void puzzleTextBox_KeyPress(Object^  sender, KeyPressEventArgs^  e) {
+				 if (!Char::IsLetter(e->KeyChar) && e->KeyChar != 8)
+				 {
+					 e->Handled = true;
+				 }
+			 }
+
 	private: Void puzzleTextBox_TextChanged(Object^  sender, EventArgs^  e) {
 				 TextBox^ tb  = static_cast<TextBox^>(sender);
+
+				 if (String::IsNullOrWhiteSpace(tb->Text))
+				 {
+					 return;
+				 }
+
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
 				 int idx = word->TextBoxes->IndexOf(tb);
