@@ -186,7 +186,7 @@ namespace CrosswordPuzzle
 			this->gamePanel->AutoScroll = true;
 			this->gamePanel->Location = System::Drawing::Point(12, 36);
 			this->gamePanel->Name = L"gamePanel";
-			this->gamePanel->Size = System::Drawing::Size(417, 125);
+			this->gamePanel->Size = System::Drawing::Size(111, 125);
 			this->gamePanel->TabIndex = 3;
 			this->gamePanel->Visible = false;
 			// 
@@ -238,8 +238,8 @@ namespace CrosswordPuzzle
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(441, 196);
-			this->Controls->Add(this->clueBox);
 			this->Controls->Add(this->introLabel);
+			this->Controls->Add(this->clueBox);
 			this->Controls->Add(this->statusStrip);
 			this->Controls->Add(this->menuStrip);
 			this->Controls->Add(this->gamePanel);
@@ -295,12 +295,12 @@ namespace CrosswordPuzzle
 				 toolStripStatusLabel->Text = "Ready.";
 			 }
 
-	private: Puzzle^ GeneratePuzzle(int len) {
+	private: Puzzle^ GeneratePuzzle(int len, int cnt) {
 				 Puzzle^ pz   = gcnew Puzzle();
 				 Random^ rand = gcnew Random();
 				 UIWord^ cwrd = nullptr;
 				 
-				 for (int i = 0, j = 1, x = 0, y = 0; i < 10; i++, x = 0, y++)
+				 for (int i = 0, j = 1, x = 0, y = 0; i < cnt; i++, x = 0, y++)
 				 {
 					 int maxlen = len;
 
@@ -456,7 +456,7 @@ namespace CrosswordPuzzle
 
 				 Random^ rand = gcnew Random();
 				 TableModel^ model = gcnew TableModel();
-				 _puzzle = GeneratePuzzle(22);
+				 _puzzle = GeneratePuzzle(26, 15);
 
 				 int x, y, xm = 0, ym = 0;
 
@@ -477,7 +477,7 @@ namespace CrosswordPuzzle
 						 break;
 
 					 case BoxType::Word:
-						 String^ idx = word->Index < 10 ? word->Index.ToString() : gcnew String(55 + word->Index, 1);
+						 String^ idx = word->Index < 10 ? word->Index.ToString() : gcnew String(word->Index < 36 ? 55 + word->Index : 61 + word->Index, 1);
 						 word->Char = CreateLabel(idx, x, y);
 
 						 Row^ row = gcnew Row();
@@ -520,6 +520,7 @@ namespace CrosswordPuzzle
 				 gamePanel->Visible = true;
 				 introLabel->Visible = false;
 				 toolStripStatusLabel->Text = "Ready.";
+				 savePuzzleToolStripMenuItem->Enabled = true;
 			 }
 
 	private: Void exitToolStripMenuItem_Click(Object^  sender, EventArgs^  e) {
