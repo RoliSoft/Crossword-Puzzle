@@ -8,15 +8,15 @@ namespace CrosswordPuzzle
 	using namespace System::Windows::Forms;
 
 	/// <summary>
-	/// Represents a word on the user interface.
+	/// Represents a word on the user interface defined by type <code>T</code>.
 	/// </summary>
-	public ref class UIWord : public PZWord
+	template <typename T> public ref class UIWord : public PZWord
 	{
 	public:
 		Label^ Char;
-		List<TextBox^>^ TextBoxes;
-		UIWord^ NextWord;
-		UIWord^ PrevWord;
+		List<T>^ Items;
+		UIWord<T>^ NextWord;
+		UIWord<T>^ PrevWord;
 		int Index;
 
 		/// <summary>
@@ -24,7 +24,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		UIWord(PZWord^ word) : PZWord(word, word->BType, word->Pos)
 		{
-			TextBoxes = gcnew List<TextBox^>();
+			Items = gcnew List<T>();
 		}
 
 		/// <summary>
@@ -32,8 +32,8 @@ namespace CrosswordPuzzle
 		/// </summary>
 		UIWord(PZWord^ word, int index) : PZWord(word, word->BType, word->Pos)
 		{
-			TextBoxes = gcnew List<TextBox^>();
-			Index     = index;
+			Items = gcnew List<T>();
+			Index = index;
 		}
 	};
 }

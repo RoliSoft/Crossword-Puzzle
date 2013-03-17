@@ -7,12 +7,12 @@ namespace CrosswordPuzzle
 	using namespace System::Collections::Generic;
 
 	/// <summary>
-	/// Represents a generated or loaded puzzle.
+	/// Represents a generated or loaded puzzle, depending on type <code>T</code>.
 	/// </summary>
-	public ref class Puzzle
+	generic <typename T> where T : DBWord public ref class Puzzle
 	{
 	public:
-		List<UIWord^>^ Words;
+		List<T>^ Words;
 		int Width;
 		int Height;
 
@@ -21,7 +21,7 @@ namespace CrosswordPuzzle
 		/// </summary>
 		Puzzle(void)
 		{
-			Words = gcnew List<UIWord^>();
+			Words = gcnew List<T>();
 		}
 
 		/// <summary>
