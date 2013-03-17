@@ -454,7 +454,7 @@ namespace CrosswordPuzzle
 					 }
 					 while (maxlen > 0);
 
-					 if (pz->Words[pz->Words->Count - 1]->Word->BType == BoxType::Black)
+					 if (pz->Words[pz->Words->Count - 1]->BType == BoxType::Black)
 					 {
 						 pz->Words->RemoveAt(pz->Words->Count - 1);
 					 }
@@ -472,7 +472,7 @@ namespace CrosswordPuzzle
 				 tb->Location     = Drawing::Point(x * 33, y * 28);
 				 tb->Size         = Drawing::Size(34, 29);
 				 tb->TextAlign    = HorizontalAlignment::Center;
-				 tb->Text         = fill ? word->Word->Word->Text[widx].ToString() : String::Empty;
+				 tb->Text         = fill ? word->Text[widx].ToString() : String::Empty;
 				 tb->Tag          = word;
 				 tb->MouseEnter  += gcnew EventHandler(this, &MainForm::puzzleTextBox_MouseEnter);
 				 tb->GotFocus    += gcnew EventHandler(this, &MainForm::puzzleTextBox_GotFocus);
@@ -522,7 +522,7 @@ namespace CrosswordPuzzle
 	private: Void CheckWord(UIWord^ word) {
 				 for (int i = 0; i < word->TextBoxes->Count; i++)
 				 {
-					 if (word->TextBoxes[i]->TextLength == 0 || word->TextBoxes[i]->Text->ToLower()[0] != word->Word->Word->Text->ToLower()[i])
+					 if (word->TextBoxes[i]->TextLength == 0 || word->TextBoxes[i]->Text->ToLower()[0] != word->Text->ToLower()[i])
 					 {
 						 if (word->Char->BackColor == Drawing::Color::Honeydew)
 						 {
@@ -571,10 +571,10 @@ namespace CrosswordPuzzle
 				 {
 					 for (int i = 0; i < word->TextBoxes->Count; i++)
 					 {
-						 if ((word->TextBoxes[i]->TextLength == 0 || word->TextBoxes[i]->Text->ToLower()[0] != word->Word->Word->Text->ToLower()[i]) && rand->Next(0, 5) == 3)
+						 if ((word->TextBoxes[i]->TextLength == 0 || word->TextBoxes[i]->Text->ToLower()[0] != word->Text->ToLower()[i]) && rand->Next(0, 5) == 3)
 						 {
 							 _noGF = true;
-							 word->TextBoxes[i]->Text = gcnew String(word->Word->Word->Text[i], 1);
+							 word->TextBoxes[i]->Text = gcnew String(word->Text[i], 1);
 						 }
 					 }
 				 }
@@ -625,10 +625,10 @@ namespace CrosswordPuzzle
 
 				 for each (UIWord^ word in _puzzle->Words)
 				 {
-					 x = word->Word->Pos->X;
-					 y = word->Word->Pos->Y;
+					 x = word->Pos->X;
+					 y = word->Pos->Y;
 
-					 switch (word->Word->BType)
+					 switch (word->BType)
 					 {
 					 default:
 				   //case BoxType::Blank:
@@ -644,18 +644,18 @@ namespace CrosswordPuzzle
 						 word->Char = CreateLabel(idx, x, y);
 
 						 Row^ row = gcnew Row();
-						 Cell^ cell = gcnew Cell(idx + ") " + word->Word->Word->Clue);
+						 Cell^ cell = gcnew Cell(idx + ") " + word->Clue);
 						 cell->WordWrap = true;
 						 cell->Tag = word;
 						 row->Cells->Add(cell);
 						 model->Rows->Add(row);
 
-						 for (int i = 0; i < word->Word->Word->Text->Length; i++)
+						 for (int i = 0; i < word->Text->Length; i++)
 						 {
 							 _tbs[x, y] = CreateWordBox(word, i, x, y, _initFill && rand->Next(0, 5) == 3);
 							 word->TextBoxes->Add(_tbs[x, y]);
 
-							 switch (word->Word->Pos->Dir)
+							 switch (word->Pos->Dir)
 							 {
 								 case Direction::Across: x++; break;
 								 case Direction::Down:   y++; break;
@@ -716,8 +716,8 @@ namespace CrosswordPuzzle
 				 TextBox^ tb  = static_cast<TextBox^>(sender);
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
-				 int x = word->Word->Pos->X + word->TextBoxes->IndexOf(tb);
-				 int y = word->Word->Pos->Y;
+				 int x = word->Pos->X + word->TextBoxes->IndexOf(tb);
+				 int y = word->Pos->Y;
 
 				 switch (e->KeyData)
 				 {
@@ -1015,15 +1015,15 @@ namespace CrosswordPuzzle
 				 for each (UIWord^ word in _puzzle->Words)
 				 {
 					 bw->Write(word->Index);
-					 bw->Write(word->Word->BType);
-					 bw->Write(word->Word->Pos->X);
-					 bw->Write(word->Word->Pos->Y);
+					 bw->Write(word->BType);
+					 bw->Write(word->Pos->X);
+					 bw->Write(word->Pos->Y);
 
-					 if (word->Word->BType == BoxType::Word)
+					 if (word->BType == BoxType::Word)
 					 {
-						 bw->Write(word->Word->Pos->Dir);
-						 bw->Write(word->Word->Word->Text);
-						 bw->Write(word->Word->Word->Clue);
+						 bw->Write(word->Pos->Dir);
+						 bw->Write(word->Text);
+						 bw->Write(word->Clue);
 						 bw->Write(word->TextBoxes->Count);
 
 						 for each (TextBox^ tb in word->TextBoxes)

@@ -10,10 +10,9 @@ namespace CrosswordPuzzle
 	/// <summary>
 	/// Represents a word on the user interface.
 	/// </summary>
-	public ref class UIWord
+	public ref class UIWord : public PZWord
 	{
 	public:
-		PZWord^ Word;
 		Label^ Char;
 		List<TextBox^>^ TextBoxes;
 		UIWord^ NextWord;
@@ -23,18 +22,16 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UIWord" /> class.
 		/// </summary>
-		UIWord(PZWord^ word)
+		UIWord(PZWord^ word) : PZWord(word, word->BType, word->Pos)
 		{
-			Word      = word;
 			TextBoxes = gcnew List<TextBox^>();
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UIWord" /> class.
 		/// </summary>
-		UIWord(PZWord^ word, int index)
+		UIWord(PZWord^ word, int index) : PZWord(word, word->BType, word->Pos)
 		{
-			Word      = word;
 			TextBoxes = gcnew List<TextBox^>();
 			Index     = index;
 		}

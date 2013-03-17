@@ -50,19 +50,17 @@ namespace CrosswordPuzzle
 	/// <summary>
 	/// Represents a word in a generated or loaded puzzle.
 	/// </summary>
-	public ref class PZWord
+	public ref class PZWord : public DBWord
 	{
 	public:
-		DBWord^ Word;
 		Position^ Pos;
 		BoxType BType;
-
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PZWord" /> class.
 		/// </summary>
-		PZWord(DBWord^ word, Position^ pos)
+		PZWord(DBWord^ word, Position^ pos) : DBWord(word->Text, word->Clue)
 		{
-			Word  = word;
 			Pos   = pos;
 			BType = BoxType::Word;
 		}
@@ -70,9 +68,8 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PZWord" /> class.
 		/// </summary>
-		PZWord(DBWord^ word, int x, int y, Direction dir)
+		PZWord(DBWord^ word, int x, int y, Direction dir) : DBWord(word->Text, word->Clue)
 		{
-			Word  = word;
 			Pos   = gcnew Position(x, y, dir);
 			BType = BoxType::Word;
 		}
@@ -80,7 +77,7 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PZWord" /> class.
 		/// </summary>
-		PZWord(BoxType bType, Position^ pos)
+		PZWord(BoxType bType, Position^ pos) : DBWord(nullptr, nullptr)
 		{
 			Pos   = pos;
 			BType = bType;
@@ -89,9 +86,18 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PZWord" /> class.
 		/// </summary>
-		PZWord(BoxType bType, int x, int y)
+		PZWord(BoxType bType, int x, int y) : DBWord(nullptr, nullptr)
 		{
 			Pos   = gcnew Position(x, y, Direction::Across);
+			BType = bType;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PZWord" /> class.
+		/// </summary>
+		PZWord(DBWord^ word, BoxType bType, Position^ pos) : DBWord(word->Text, word->Clue)
+		{
+			Pos   = pos;
 			BType = bType;
 		}
 	};
