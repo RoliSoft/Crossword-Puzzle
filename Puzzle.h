@@ -13,6 +13,8 @@ namespace CrosswordPuzzle
 	{
 	public:
 		List<UIWord^>^ Words;
+		int Width;
+		int Height;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Puzzle" /> class.

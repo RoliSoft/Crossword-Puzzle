@@ -340,6 +340,7 @@ namespace CrosswordPuzzle
 
 	private: WordList^ _words;
 			 Puzzle^ _puzzle;
+			 array<TextBox^, 2>^ _tbs;
 			 int _puzzleWidth;
 			 int _puzzleHeight;
 			 int _dbSelIdx;
@@ -405,6 +406,9 @@ namespace CrosswordPuzzle
 				 Random^ rand = gcnew Random();
 				 UIWord^ cwrd = nullptr;
 				 
+				 pz->Width  = len;
+				 pz->Height = cnt;
+
 				 for (int i = 0, j = 1, x = 0, y = 0; i < cnt; i++, x = 0, y++)
 				 {
 					 int maxlen = len;
@@ -611,6 +615,7 @@ namespace CrosswordPuzzle
 				 Random^ rand = gcnew Random();
 				 TableModel^ model = gcnew TableModel();
 				 _puzzle = GeneratePuzzle(_puzzleWidth, _puzzleHeight);
+				 _tbs = gcnew array<TextBox^, 2>(_puzzle->Width, _puzzle->Height);
 
 				 toolStripStatusLabel->Text = "Rendering puzzle...";
 				 statusStrip->Refresh();
@@ -647,7 +652,8 @@ namespace CrosswordPuzzle
 
 						 for (int i = 0; i < word->Word->Word->Text->Length; i++)
 						 {
-							 word->TextBoxes->Add(CreateWordBox(word, i, x, y, _initFill && rand->Next(0, 5) == 3));
+							 _tbs[x, y] = CreateWordBox(word, i, x, y, _initFill && rand->Next(0, 5) == 3);
+							 word->TextBoxes->Add(_tbs[x, y]);
 
 							 switch (word->Word->Pos->Dir)
 							 {
@@ -710,6 +716,9 @@ namespace CrosswordPuzzle
 				 TextBox^ tb  = static_cast<TextBox^>(sender);
 				 UIWord^ word = static_cast<UIWord^>(tb->Tag);
 
+				 int x = word->Word->Pos->X + word->TextBoxes->IndexOf(tb);
+				 int y = word->Word->Pos->Y;
+
 				 switch (e->KeyData)
 				 {
 				 default:
@@ -717,126 +726,72 @@ namespace CrosswordPuzzle
 
 				 case Keys::Up:
 					 {
-						 int x = word->Word->Pos->X + word->TextBoxes->IndexOf(tb);
-						 int y = word->Word->Pos->Y;
-						 UIWord^ cwrd = word;
-
-						 if (y == 0)
+						 for (int i = y - 1; i != y; i--)
 						 {
-							 while (cwrd->NextWord != nullptr)
+							 if (i == -1)
 							 {
-								 cwrd = cwrd->NextWord;
+								 i = _puzzle->Height - 1;
 							 }
 
-							 y = cwrd->Word->Pos->Y + 1;
-						 }
-
-						 while (cwrd->Word->Pos->Y == y && cwrd->PrevWord != nullptr)
-						 {
-							 cwrd = cwrd->PrevWord;
-						 }
-
-						 while (cwrd->PrevWord != nullptr && (cwrd->PrevWord->Word->Pos->X + cwrd->PrevWord->TextBoxes->Count) >= x && cwrd->PrevWord->Word->Pos->Y == (y - 1))
-						 {
-							 cwrd = cwrd->PrevWord;
-						 }
-
-						 int idx = x - cwrd->Word->Pos->X;
-						 if (idx >= 0 && idx < cwrd->TextBoxes->Count)
-						 {
-							 cwrd->TextBoxes[idx]->Focus();
-						 }
-						 else if (idx >= 0)
-						 {
-							 cwrd->TextBoxes[cwrd->TextBoxes->Count - 1]->Focus();
+							 if (_tbs[x, i] != nullptr)
+							 {
+								 _tbs[x, i]->Focus();
+								 break;
+							 }
 						 }
 					 }
 					break;
 
 				case Keys::Down:
 					{
-						int x = word->Word->Pos->X + word->TextBoxes->IndexOf(tb);
-						int y = word->Word->Pos->Y;
-						UIWord^ cwrd = word;
-
-						while (cwrd->Word->Pos->Y == y && cwrd->NextWord != nullptr)
+						for (int i = y + 1; i != y; i++)
 						{
-							cwrd = cwrd->NextWord;
-						}
-
-						if (cwrd->NextWord == nullptr && cwrd->Word->Pos->Y == y)
-						{
-							while (cwrd->PrevWord != nullptr)
+							if (i == _puzzle->Height)
 							{
-								cwrd = cwrd->PrevWord;
+								i = 0;
 							}
 
-							y = 0;
-						}
-
-						while ((cwrd->Word->Pos->X + cwrd->TextBoxes->Count) < x && cwrd->NextWord != nullptr)
-						{
-							cwrd = cwrd->NextWord;
-						}
-
-						int idx = x - cwrd->Word->Pos->X;
-						if (idx >= 0 && idx < cwrd->TextBoxes->Count)
-						{
-							cwrd->TextBoxes[idx]->Focus();
-						}
-						else if (idx >= 0 && cwrd->NextWord != nullptr)
-						{
-							cwrd->NextWord->TextBoxes[0]->Focus();
+							if (_tbs[x, i] != nullptr)
+							{
+								_tbs[x, i]->Focus();
+								break;
+							}
 						}
 					}
 					break;
 
 				case Keys::Left:
 					{
-						int idx = word->TextBoxes->IndexOf(tb);
-						if (idx > 0)
+						for (int i = x - 1; i != x; i--)
 						{
-							word->TextBoxes[idx - 1]->Focus();
-						}
-						else if (word->PrevWord != nullptr)
-						{
-							word->PrevWord->TextBoxes[word->PrevWord->TextBoxes->Count - 1]->Focus();
-						}
-						else if (word->NextWord != nullptr)
-						{
-							UIWord^ cwrd = word;
-
-							while (cwrd->NextWord != nullptr)
+							if (i == -1)
 							{
-								cwrd = cwrd->NextWord;
+								i = _puzzle->Width - 1;
 							}
 
-							cwrd->TextBoxes[cwrd->TextBoxes->Count - 1]->Focus();
+							if (_tbs[i, y] != nullptr)
+							{
+								_tbs[i, y]->Focus();
+								break;
+							}
 						}
 					}
 					break;
 
 				case Keys::Right:
 					{
-						int idx = word->TextBoxes->IndexOf(tb);
-						if (idx != word->TextBoxes->Count - 1)
+						for (int i = x + 1; i != x; i++)
 						{
-							word->TextBoxes[idx + 1]->Focus();
-						}
-						else if (word->NextWord != nullptr)
-						{
-							word->NextWord->TextBoxes[0]->Focus();
-						}
-						else if (word->PrevWord != nullptr)
-						{
-							UIWord^ cwrd = word;
-
-							while (cwrd->PrevWord != nullptr)
+							if (i == _puzzle->Width)
 							{
-								cwrd = cwrd->PrevWord;
+								i = 0;
 							}
 
-							cwrd->TextBoxes[0]->Focus();
+							if (_tbs[i, y] != nullptr)
+							{
+								_tbs[i, y]->Focus();
+								break;
+							}
 						}
 					}
 					break;
