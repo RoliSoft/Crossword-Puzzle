@@ -5,7 +5,6 @@ namespace CrosswordPuzzle
 	using namespace System;
 	using namespace System::Collections;
 	using namespace System::Collections::Generic;
-	using namespace System::IO;
 	using namespace System::Text::RegularExpressions;
 
 	/// <summary>
@@ -73,6 +72,9 @@ namespace CrosswordPuzzle
 		/// <summary>
 		/// Gets a random word from the database.
 		/// </summary>
+		/// <returns>
+		/// A word or <code>nullptr</code>.
+		/// </returns>
 		DBWord^ GetWord()
 		{
 			if (words->Count == 0)
@@ -84,59 +86,105 @@ namespace CrosswordPuzzle
 		}
 
 		/// <summary>
-		/// Gets a random word of the specified size from the database.
+		/// Gets a random word that matches the specified regular expression from the database.
 		/// </summary>
-		/// <remarks>
-		/// If a word of the specified size was not found, the last inspected word will be returned.
-		/// </remarks>
-		DBWord^ GetWord(int size)
+		/// <returns>
+		/// A word that met the specified criteria or <code>nullptr</code>.
+		/// </returns>
+		DBWord^ GetWord(Regex^ rgx)
 		{
-			if (words->Count == 0)
+			if (words == nullptr || words->Count == 0)
 			{
 				return nullptr;
 			}
 
-			DBWord^ w;
+			HashSet<int>^ hs = gcnew HashSet<int>();
 
-			for (int i = 0; i < words->Count; i++)
+			for (int i = 0, j; i < words->Count; i++)
 			{
-				w = words[rand->Next(0, words->Count - 1)];
-
-				if (w->Text->Length == size)
+				do
 				{
-					break;
+					j = rand->Next(words->Count);
 				}
+				while (hs->Contains(j));
+
+				if (rgx->IsMatch(words[j]->Text))
+				{
+					return words[j];
+				}
+
+				hs->Add(j);
 			}
 
-			return w;
+			return nullptr;
+		}
+
+		/// <summary>
+		/// Gets a random word of the specified size from the database.
+		/// </summary>
+		/// <returns>
+		/// A word that met the specified criteria or <code>nullptr</code>.
+		/// </returns>
+		DBWord^ GetWord(int size)
+		{
+			if (words == nullptr || words->Count == 0)
+			{
+				return nullptr;
+			}
+
+			HashSet<int>^ hs = gcnew HashSet<int>();
+
+			for (int i = 0, j; i < words->Count; i++)
+			{
+				do
+				{
+					j = rand->Next(words->Count);
+				}
+				while (hs->Contains(j));
+
+				if (words[j]->Text->Length == size)
+				{
+					return words[j];
+				}
+
+				hs->Add(j);
+			}
+
+			return nullptr;
 		}
 
 		/// <summary>
 		/// Gets a random word between the specified sizes from the database.
 		/// </summary>
-		/// <remarks>
-		/// If a word of the specified size was not found, the last inspected word will be returned.
-		/// </remarks>
+		/// <returns>
+		/// A word that met the specified criteria or <code>nullptr</code>.
+		/// </returns>
 		DBWord^ GetWord(int min, int max)
 		{
-			if (words->Count == 0)
+			if (words == nullptr || words->Count == 0)
 			{
 				return nullptr;
 			}
 
-			DBWord^ w;
+			HashSet<int>^ hs = gcnew HashSet<int>();
 
-			for (int i = 0; i < words->Count; i++)
+			for (int i = 0, j; i < words->Count; i++)
 			{
-				w = words[rand->Next(0, words->Count - 1)];
-
-				if (w->Text->Length >= min && w->Text->Length <= max)
+				do
 				{
-					break;
+					j = rand->Next(words->Count);
 				}
+				while (hs->Contains(j));
+
+				if (words[j]->Text->Length >= min && words[j]->Text->Length <= max)
+				{
+					return words[j];
+				}
+
+				hs->Add(j);
 			}
 
-			return w;
+			return nullptr;
 		}
 	};
 }
