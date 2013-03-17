@@ -836,14 +836,7 @@ namespace CrosswordPuzzle
 				 }
 				 else if (word->PrevWord != nullptr)
 				 {
-					 UIWord<TextBox^>^ cwrd = word;
-					 
-					 while (cwrd->PrevWord != nullptr)
-					 {
-						 cwrd = cwrd->PrevWord;
-					 }
-
-					 cwrd->Items[0]->Focus();
+					 _puzzle->Words[0]->Items[0]->Focus();
 				 }
 			 }
 

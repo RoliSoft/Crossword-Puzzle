@@ -25,6 +25,14 @@ namespace CrosswordPuzzle
 		}
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="Puzzle" /> class.
+		/// </summary>
+		Puzzle<T>(List<T>^ words)
+		{
+			Words = words;
+		}
+
+		/// <summary>
 		/// Finalizes an instance of the <see cref="Puzzle" /> class.
 		/// </summary>
 		~Puzzle()
